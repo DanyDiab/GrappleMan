@@ -45,7 +45,7 @@ public class move : MonoBehaviour
         Vector3 translate = new Vector3(AdjustedSpeed,-gforce,0);
         if(grappling){
             translate = grappler.getDir() * AdjustedSpeed;
-            if(!onFloor){
+            if(!onFloor && !jumped){
                 translate.y = grappler.getDir().y;
             }
             translate.y += -gforce;
