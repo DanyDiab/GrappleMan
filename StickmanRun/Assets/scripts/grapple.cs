@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,17 +9,20 @@ public class Grapple : MonoBehaviour{
     private float length;
     private Vector3 dir;
     private float grappleSpeed;
-    private float speedBoost;
+
     private float totalMoved;
     private bool isCast;
 
     private bool startReturn;
+    private bool isAttached;
+    public event Action<Vector3> OnAttach;
+    private float speedBoost;
 
     void Start(){
 
         length = 15;
-        grappleSpeed = 20;
-        speedBoost = 7;
+        grappleSpeed = 25;
+        speedBoost = 10;
     }
 
     void FixedUpdate()
@@ -26,15 +30,20 @@ public class Grapple : MonoBehaviour{
         if(Input.GetMouseButton(0) && !isCast){
             cast();
         }
-        if(startReturn){
-            resetGrapple();
+        else if(isAttached){
+            resetStates();
+            OnAttach?.Invoke(dir);
+        }
+        else if(startReturn){
+            sendGrappleBack();
             return;
         }
-        if(isCast){
+        else if(isCast){
             sendHead();
         }
 
     }
+    
 
 
 
@@ -53,6 +62,7 @@ public class Grapple : MonoBehaviour{
         }
     }
 
+    
     private void sendHead(){
         // back and -dir since i drew the head upside down
         transform.rotation = Quaternion.LookRotation(Vector3.forward, -dir);
@@ -60,39 +70,56 @@ public class Grapple : MonoBehaviour{
         Vector3 translation = Vector2.down * grappleSpeed * Time.deltaTime;
         transform.Translate(translation);
         if(totalMoved > length){
-
             startReturn = true;
         }
     }
 
-    // prob wont work for player movement
-    private void attached(){
-        transform.parent.transform.Translate(speedBoost * Time.deltaTime * dir);
-    }
 
-    private void resetGrapple(){
+// can i make a general function for moving and when the it reaches the end make the speed *-1?
+    private void sendGrappleBack(){
             // find the camera position to return the grapple to
 
             Vector3 translation = Vector2.up * grappleSpeed * Time.deltaTime;
             transform.Translate(translation);
             totalMoved -= grappleSpeed * Time.deltaTime;
-            bool isBehindPlayer = transform.position.x - Camera.main.transform.position.x < 0;
-            if(totalMoved <= 0 || isBehindPlayer){
-                gameObject.transform.GetChild(0).gameObject.SetActive(false);
-                startReturn = false;
-                isCast = false;
-                totalMoved = 0;
-            }
-            // Vector3 returnPos = new Vector3(camPos.x,camPos.y,1);
-            // transform.position = returnPos;
+            resetStates();
+    }
+
+    private bool resetStates(){
+        bool isBehindPlayer = transform.position.x - Camera.main.transform.position.x < 0;
+        if(totalMoved <= 0 || isBehindPlayer){
+            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            isAttached = false;
+            startReturn = false;
+            isCast = false;
+            totalMoved = 0;
+            return true;
+        }
+        return false;
     }
 
     void OnTriggerEnter2D(Collider2D collider){
         if(collider.gameObject.layer == LayerMask.NameToLayer("Floor")){
-            startReturn = true;
+            isAttached = true;
             // move the player
             // attached();
             return;
         }
+        else{
+            resetStates();
+            return;
+        }
+    }
+
+    public float getSpeedBoost(){
+        return speedBoost;
+    }
+
+    public bool getIsAttached(){
+        return isAttached;
+    }
+    
+    public Vector3 getDir(){
+        return dir;
     }
 }

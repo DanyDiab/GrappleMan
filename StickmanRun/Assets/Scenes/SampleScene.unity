@@ -15750,7 +15750,7 @@ GameObject:
   - component: {fileID: 1260823118}
   m_Layer: 5
   m_Name: StickMan
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15779,7 +15779,8 @@ Transform:
   m_LocalPosition: {x: -10, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1931637927}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1260823120
@@ -15964,11 +15965,11 @@ Transform:
   m_GameObject: {fileID: 1931637926}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1260823119}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1931637928
 SpriteRenderer:
@@ -16147,7 +16148,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1260823119}
   - {fileID: 268825327}
-  - {fileID: 1931637927}
   - {fileID: 534393342}
   - {fileID: 163452230}
   - {fileID: 2134634709}
