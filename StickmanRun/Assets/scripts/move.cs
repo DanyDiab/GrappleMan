@@ -7,15 +7,21 @@ public class move : MonoBehaviour
     private int speed;
     private float gconstant;
     private float gforce;
-    private bool jumped; 
+    private float initGForce;
+    private float jumpForce; 
     private bool onFloor;
+    private bool jumped;
 
     // Start is called before the first frame update
+
+    // increase and decrease speed with d and s?
     void Start()
     {
-        speed = 2;
-        gconstant = .04f;
+        speed = 4;
+        gconstant = .18f;
         gforce = 0;
+        jumpForce = .15f;
+        initGForce = .2f;
     }
     void FixedUpdate(){
         applyGravity();
@@ -23,28 +29,32 @@ public class move : MonoBehaviour
         if(Input.GetKey(KeyCode.Space) && onFloor){
             jump();
         }
+
         float AdjustedSpeed = speed * Time.deltaTime;
-        Vector3 newPos = new Vector3(transform.position.x + AdjustedSpeed,transform.position.y - gforce,1); 
-        transform.position = newPos;
+        Vector3 translate = new Vector3(AdjustedSpeed,-gforce,0);
+        transform.Translate(translate);
     }
 
 
     void applyGravity(){
         if(onFloor){
+            jumped = false;
             gforce = 0;
             return;
         }
         else if(gforce < 2){
+            Debug.Log(gforce);
             // add an initial gravity force
-            if(gforce == 0){
-                gforce = .04f;
+            if(gforce == 0 && jumped){
+                gforce = initGForce;
             }
             // continue adding to the gravity force
             gforce += gconstant * Time.deltaTime;
         }
     }
     void jump(){
-        gforce -= .04f;
+        jumped = true;
+        gforce -= jumpForce;
     }
 
 
