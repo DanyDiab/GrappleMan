@@ -15,6 +15,7 @@ public class move : MonoBehaviour
     private bool jumped;
     private Grapple grappler;
     private bool grappling;
+    private float grappleSpeedCombo;
 
 
     // Start is called before the first frame update
@@ -28,6 +29,7 @@ public class move : MonoBehaviour
         gforce = 0;
         jumpForce = .15f;
         initGForce = .2f;
+        grappleSpeedCombo = .03f;
 
         grappler = FindFirstObjectByType<Grapple>();
         grappler.OnAttach += grappleAttach;
@@ -40,17 +42,7 @@ public class move : MonoBehaviour
             jump();
         }
 
-        float AdjustedSpeed = speed * Time.deltaTime;
-
-        Vector3 translate = new Vector3(AdjustedSpeed,-gforce,0);
-        if(grappling){
-            translate = grappler.getDir() * AdjustedSpeed;
-            if(!onFloor && !jumped){
-                translate.y = grappler.getDir().y;
-            }
-            translate.y += -gforce;
-        //    translate *= AdjustedSpeed;
-        }
+        Vector3 translate = calculateCurrMove();
         transform.Translate(translate);
     }
 
@@ -84,10 +76,29 @@ public class move : MonoBehaviour
     // this is a function is called by an action
     void grappleAttach(Vector3 dir){
         grappling = true;
+
         // keep calling funciton if the grapple attached
         speed = grappler.getSpeedBoost();
         // when the grapple is not attached check if in the air, if in the air keep boost until floor
         // transform.Translate(dir * speed * Time.deltaTime);
+    }
+
+    Vector3 calculateCurrMove(){
+        float AdjustedSpeed = speed * Time.deltaTime;
+
+        Vector3 translate = new Vector3(AdjustedSpeed,-gforce,0);
+        // if grappling apply different physics
+        if(grappling){
+            // grapple speed combo is reseting after each grapple
+            translate = grappler.getDir() * (AdjustedSpeed + grappleSpeedCombo);
+            // only take into account the grappler y value if hes not on the floor/didnt jump
+            if(!onFloor && !jumped){
+                translate.y = grappler.getDir().y;
+            }
+            translate.y += -gforce;
+        //    translate *= AdjustedSpeed;
+        }
+        return translate;
     }
 
     void resetSpeed(){
