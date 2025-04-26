@@ -29,8 +29,6 @@ public class move : MonoBehaviour
         gforce = 0;
         jumpForce = .15f;
         initGForce = .2f;
-        grappleSpeedCombo = .03f;
-
         grappler = FindFirstObjectByType<Grapple>();
         grappler.OnAttach += grappleAttach;
     }
@@ -74,11 +72,10 @@ public class move : MonoBehaviour
 
 
     // this is a function is called by an action
-    void grappleAttach(Vector3 dir){
+    void grappleAttach(float newSpeed){
         grappling = true;
-
         // keep calling funciton if the grapple attached
-        speed = grappler.getSpeedBoost();
+        speed = newSpeed;
         // when the grapple is not attached check if in the air, if in the air keep boost until floor
         // transform.Translate(dir * speed * Time.deltaTime);
     }
@@ -90,7 +87,7 @@ public class move : MonoBehaviour
         // if grappling apply different physics
         if(grappling){
             // grapple speed combo is reseting after each grapple
-            translate = grappler.getDir() * (AdjustedSpeed + grappleSpeedCombo);
+            translate = grappler.getDir() * AdjustedSpeed;
             // only take into account the grappler y value if hes not on the floor/didnt jump
             if(!onFloor && !jumped){
                 translate.y = grappler.getDir().y;
@@ -103,6 +100,7 @@ public class move : MonoBehaviour
 
     void resetSpeed(){
         grappling = false;
+        grappler.resetSuccessCounter();
         speed = initSpeed;
     }
 

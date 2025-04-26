@@ -6,50 +6,56 @@ using UnityEngine;
 public class Grapple : MonoBehaviour{
 
     // how far the grappler can reach
-    private float length;
-    private Vector3 dir;
-    private float grappleSpeed;
+    float length;
+    Vector3 dir;
 
-    private float totalMoved;
-    private bool isCast;
+    Vector3 attachPos;
+    float grappleSpeed;
 
-    private bool startReturn;
-    private bool isAttached;
-    public event Action<Vector3> OnAttach;
-    private float speedBoost;
+    float totalMoved;
+    bool isCast;
+
+    bool startReturn;
+    bool isAttached;
+    public event Action<float> OnAttach;
+
+    LineRenderer lineRenderer;
+    int successCounter;
+    float speedBoost;
+    bool addNewSuccess;
+
 
     void Start(){
-
+        speedBoost = 15;
         length = 15;
         grappleSpeed = 25;
-        speedBoost = 10;
+        lineRenderer = GetComponentInChildren<LineRenderer>();
+        addNewSuccess = true;
     }
 
-    void FixedUpdate()
-    {
+    void FixedUpdate(){
         if(Input.GetMouseButton(0) && !isCast){
             cast();
         }
+
         else if(isAttached){
             resetStates();
-            OnAttach?.Invoke(dir);
+            keepHeadInPlace();
         }
         else if(startReturn){
             sendGrappleBack();
-            return;
         }
         else if(isCast){
             sendHead();
         }
-
+        drawLine();
     }
     
 
 
-
     public void cast(){
-        Vector3 startPos = Camera.main.transform.position;
-        startPos.z = 0;
+        Vector3 startPos = transform.parent.position;
+        Debug.Log(transform.parent.gameObject.tag);
         transform.position = startPos;
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = 1;
@@ -57,7 +63,11 @@ public class Grapple : MonoBehaviour{
         dir = worldMousePos - transform.position;
         dir.Normalize();
         if(dir.x > 0){
-            gameObject.transform.GetChild(0).gameObject.SetActive(true);
+            foreach(Transform child in transform){
+                child.gameObject.SetActive(true);
+            }
+            GetComponent<BoxCollider2D>().enabled = true;
+
             isCast = true;
         }
     }
@@ -65,9 +75,9 @@ public class Grapple : MonoBehaviour{
     
     private void sendHead(){
         // back and -dir since i drew the head upside down
-        transform.rotation = Quaternion.LookRotation(Vector3.forward, -dir);
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
         totalMoved += grappleSpeed * Time.deltaTime;
-        Vector3 translation = Vector2.down * grappleSpeed * Time.deltaTime;
+        Vector3 translation = Vector2.up * grappleSpeed * Time.deltaTime;
         transform.Translate(translation);
         if(totalMoved > length){
             startReturn = true;
@@ -79,30 +89,50 @@ public class Grapple : MonoBehaviour{
     private void sendGrappleBack(){
             // find the camera position to return the grapple to
 
-            Vector3 translation = Vector2.up * grappleSpeed * Time.deltaTime;
+            Vector3 translation = Vector2.down * grappleSpeed * Time.deltaTime;
             transform.Translate(translation);
             totalMoved -= grappleSpeed * Time.deltaTime;
             resetStates();
     }
 
-    private bool resetStates(){
-        bool isBehindPlayer = transform.position.x - Camera.main.transform.position.x < 0;
+    private void resetStates(){
+        bool isBehindPlayer = transform.position.x - transform.parent.position.x < 1;
         if(totalMoved <= 0 || isBehindPlayer){
-            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            foreach(Transform child in transform){
+                child.gameObject.SetActive(false);
+            }
             isAttached = false;
             startReturn = false;
             isCast = false;
             totalMoved = 0;
-            return true;
         }
-        return false;
+        
     }
 
+    private void drawLine(){
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, transform.parent.position);
+        lineRenderer.SetPosition(1, transform.position);
+        
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, transform.position - transform.parent.position);
+    }
+
+
+    private void keepHeadInPlace(){
+        transform.position = attachPos;
+    }
     void OnTriggerEnter2D(Collider2D collider){
         if(collider.gameObject.layer == LayerMask.NameToLayer("Floor")){
+            GetComponent<BoxCollider2D>().enabled = false;
             isAttached = true;
+            if(addNewSuccess){
+                successCounter++;
+                OnAttach?.Invoke(successCounter * .5f * speedBoost);
+                addNewSuccess = false;
+            }
             // move the player
             // attached();
+            attachPos = transform.position;
             return;
         }
         else{
@@ -111,8 +141,11 @@ public class Grapple : MonoBehaviour{
         }
     }
 
-    public float getSpeedBoost(){
-        return speedBoost;
+    void OnTriggerExit2D(Collider2D collider){
+        if(collider.gameObject.layer == LayerMask.NameToLayer("Floor")){
+            addNewSuccess = true;
+
+        }
     }
 
     public bool getIsAttached(){
@@ -121,5 +154,9 @@ public class Grapple : MonoBehaviour{
     
     public Vector3 getDir(){
         return dir;
+    }
+
+    public void resetSuccessCounter(){
+        successCounter = 0;
     }
 }

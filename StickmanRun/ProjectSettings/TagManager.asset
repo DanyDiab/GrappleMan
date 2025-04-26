@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Floor
+  - Grappler
   layers:
   - Default
   - TransparentFX
