@@ -40,9 +40,9 @@ public class move : MonoBehaviour
 
     void FixedUpdate(){
         // if not grappling, preserve air momentum
-        if(!Input.GetMouseButton(0) && !onFloor){
-            preserveAir();
-        }
+        preserveAir();
+        
+        
 
         // move to the right by default
 
@@ -52,7 +52,7 @@ public class move : MonoBehaviour
 
 
     void preserveAir(){
-        if(!onFloor){
+        if(!onFloor && !Input.GetMouseButton(0)){
             if(airX == 0){
                 airX = rb.velocity.x;
             }
