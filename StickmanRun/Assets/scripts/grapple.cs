@@ -7,9 +7,9 @@ public class Grapple : MonoBehaviour{
 
     // how far the grappler can reach
     float length;
-    Vector3 dir;
+    Vector2 dir;
 
-    Vector3 attachPos;
+    Vector2 attachPos;
     float grappleSpeed;
 
     float totalMoved;
@@ -21,64 +21,85 @@ public class Grapple : MonoBehaviour{
 
     LineRenderer lineRenderer;
     int successCounter;
-    float speedBoost;
+    public float speedBoost;
+    float successBoost;
     bool addNewSuccess;
+    Vector3 currMove;
+    float currSpeed;
+    Rigidbody2D rb;
+    Vector2 moveDir;
+    bool addMove;
+    Vector3 lastPos; 
 
 
     void Start(){
-        speedBoost = 15;
-        length = 15;
+        speedBoost = 500;
+        length = 20;
         grappleSpeed = 25;
         lineRenderer = GetComponentInChildren<LineRenderer>();
         addNewSuccess = true;
+        rb = GetComponent<Rigidbody2D>();
+        successBoost = 20;
+        resetStates();
     }
 
     void FixedUpdate(){
         if(Input.GetMouseButton(0) && !isCast){
+            keepHeadInPlace(false);
             cast();
         }
-
-        else if(isAttached){
+        else if(addMove){
+            applyMove();
             resetStates();
-            keepHeadInPlace();
         }
-        else if(startReturn){
-            sendGrappleBack();
-        }
-        else if(isCast){
+        else if (isCast){
             sendHead();
         }
+
+        // else if(startReturn){
+        //     sendGrappleBack();
+        // }
+        // else if(isCast){
+        //     sendHead();
+        // }
+        // if(addMove){
+        //     applyMove();
+        // }
+
+    }
+
+    void LateUpdate()
+    {
         drawLine();
     }
-    
+
+
+
 
 
     public void cast(){
         Vector3 startPos = transform.parent.position;
-        Debug.Log(transform.parent.gameObject.tag);
         transform.position = startPos;
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = 1;
         Vector3 worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
         dir = worldMousePos - transform.position;
         dir.Normalize();
-        if(dir.x > 0){
-            foreach(Transform child in transform){
-                child.gameObject.SetActive(true);
-            }
-            GetComponent<BoxCollider2D>().enabled = true;
-
-            isCast = true;
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
+        foreach(Transform child in transform){
+            child.gameObject.SetActive(true);
+        
+        GetComponent<BoxCollider2D>().enabled = true;
+        isCast = true;
         }
     }
 
     
     private void sendHead(){
         // back and -dir since i drew the head upside down
-        transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
         totalMoved += grappleSpeed * Time.deltaTime;
-        Vector3 translation = Vector2.up * grappleSpeed * Time.deltaTime;
-        transform.Translate(translation);
+        Vector2 translation = transform.up * grappleSpeed;
+        rb.velocity = translation;
         if(totalMoved > length){
             startReturn = true;
         }
@@ -87,26 +108,50 @@ public class Grapple : MonoBehaviour{
 
 // can i make a general function for moving and when the it reaches the end make the speed *-1?
     private void sendGrappleBack(){
-            // find the camera position to return the grapple to
+        // find the camera position to return the grapple to
+        Vector2 translation = transform.up * grappleSpeed;
+        rb.AddForce(translation);
+        totalMoved -= grappleSpeed;
+        
 
-            Vector3 translation = Vector2.down * grappleSpeed * Time.deltaTime;
-            transform.Translate(translation);
-            totalMoved -= grappleSpeed * Time.deltaTime;
-            resetStates();
     }
 
-    private void resetStates(){
-        bool isBehindPlayer = transform.position.x - transform.parent.position.x < 1;
-        if(totalMoved <= 0 || isBehindPlayer){
+    public void resetStates(){
+        Debug.Log("moved = " + totalMoved);
+        totalMoved -= (transform.parent.position - lastPos).magnitude;
+        lastPos = transform.parent.position;
+        if(totalMoved <= length){
             foreach(Transform child in transform){
                 child.gameObject.SetActive(false);
             }
             isAttached = false;
             startReturn = false;
             isCast = false;
+            addMove = false;
             totalMoved = 0;
         }
-        
+
+    }
+
+    void calculateMoveDirection(){
+            // if the grapple is too close dont change the direction
+        moveDir = Vector2.zero;
+        if((transform.position - transform.parent.position).magnitude > .1){
+            moveDir = transform.position - transform.parent.position;
+            addMove = true;
+            moveDir.Normalize();
+        }
+    }
+
+    private void applyMove(){
+        Rigidbody2D playerRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
+        if(isAttached){
+            playerRb.AddForce(moveDir * currSpeed, ForceMode2D.Force);
+        }
+        else{
+            successCounter = 0;
+            addMove = false;
+        }
     }
 
     private void drawLine(){
@@ -114,37 +159,41 @@ public class Grapple : MonoBehaviour{
         lineRenderer.SetPosition(0, transform.parent.position);
         lineRenderer.SetPosition(1, transform.position);
         
-        transform.rotation = Quaternion.LookRotation(Vector3.forward, transform.position - transform.parent.position);
+        // transform.rotation = Quaternion.LookRotation(Vector3.forward, transform.position - transform.parent.position);
     }
 
 
-    private void keepHeadInPlace(){
-        transform.position = attachPos;
+    private void keepHeadInPlace(bool apply){
+        if(apply){
+            rb.constraints = RigidbodyConstraints2D.FreezePosition;
+            return;
+        }
+        rb.constraints = RigidbodyConstraints2D.None;
+
+
     }
-    void OnTriggerEnter2D(Collider2D collider){
-        if(collider.gameObject.layer == LayerMask.NameToLayer("Floor")){
+    void OnTriggerStay2D(Collider2D collider){
+        if((collider.gameObject.layer == LayerMask.NameToLayer("Floor") || collider.tag == "Light") && isCast){
+            calculateMoveDirection();
+            keepHeadInPlace(true);
             GetComponent<BoxCollider2D>().enabled = false;
             isAttached = true;
+            addMove = true;
             if(addNewSuccess){
-                successCounter++;
-                OnAttach?.Invoke(successCounter * .5f * speedBoost);
+                currSpeed = successCounter * successBoost + speedBoost;
                 addNewSuccess = false;
+                successCounter++;
             }
-            // move the player
-            // attached();
-            attachPos = transform.position;
-            return;
+
         }
-        else{
-            resetStates();
-            return;
-        }
+
     }
 
     void OnTriggerExit2D(Collider2D collider){
-        if(collider.gameObject.layer == LayerMask.NameToLayer("Floor")){
-            addNewSuccess = true;
 
+        if(collider.gameObject.layer == LayerMask.NameToLayer("Floor") || collider.tag == "Light"){
+            addNewSuccess = true;
+            isAttached = false;
         }
     }
 
@@ -152,7 +201,7 @@ public class Grapple : MonoBehaviour{
         return isAttached;
     }
     
-    public Vector3 getDir(){
+    public Vector2 getDir(){
         return dir;
     }
 

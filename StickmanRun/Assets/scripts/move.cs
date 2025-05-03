@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class move : MonoBehaviour
@@ -7,15 +9,19 @@ public class move : MonoBehaviour
     private float speed;
     private float initSpeed;
 
-    private float gconstant;
-    private float gforce;
-    private float initGForce;
-    private float jumpForce; 
+    public float jumpForce; 
     private bool onFloor;
     private bool jumped;
     private Grapple grappler;
-    private bool grappling;
-    private float grappleSpeedCombo;
+    Vector3 currMove;
+    Vector3 grappleDir;
+    Rigidbody2D rb;
+    float airX;
+    float airSpeed;
+    Vector3 initAirPos;
+    public int jumpFrames;
+    int currFrames;
+    public Vector2 jumpDir;
 
 
     // Start is called before the first frame update
@@ -23,83 +29,40 @@ public class move : MonoBehaviour
     // increase and decrease speed with d and s?
     void Start()
     {
-        initSpeed = 4;
+        jumpFrames = 2;
+        initSpeed = 10;
         speed = initSpeed;
-        gconstant = .18f;
-        gforce = 0;
-        jumpForce = .15f;
-        initGForce = .2f;
+        jumpForce = 20f;
         grappler = FindFirstObjectByType<Grapple>();
-        grappler.OnAttach += grappleAttach;
+        rb = GetComponent<Rigidbody2D>();
+        jumpDir = new Vector2(.2f,1);
     }
 
     void FixedUpdate(){
-        applyGravity();
-        // move to the right by default
-        if(Input.GetKey(KeyCode.Space) && onFloor){
-            jump();
+        // if not grappling, preserve air momentum
+        if(!Input.GetMouseButton(0) && !onFloor){
+            preserveAir();
         }
 
-        Vector3 translate = calculateCurrMove();
-        transform.Translate(translate);
+        // move to the right by default
+
+
     }
 
 
-    void applyGravity(){
-        if(onFloor){
-            // resetSpeed()
-            jumped = false;
-            gforce = 0;
-            if(!grappler.getIsAttached()){
-                resetSpeed();
+
+    void preserveAir(){
+        if(!onFloor){
+            if(airX == 0){
+                airX = rb.velocity.x;
             }
+            rb.velocity = new Vector2(airX, rb.velocity.y);
             return;
         }
-        else if(gforce < 2 && !grappler.getIsAttached()){
-            // add an initial gravity force
-            if(gforce == 0 && jumped){
-                gforce = initGForce;
-            }
-            // continue adding to the gravity force
-            gforce += gconstant * Time.deltaTime;
+        airX = 0;
         }
-    }
-
-    void jump(){
-        jumped = true;
-        gforce -= jumpForce;
-    }
-
-
-    // this is a function is called by an action
-    void grappleAttach(float newSpeed){
-        grappling = true;
-        // keep calling funciton if the grapple attached
-        speed = newSpeed;
-        // when the grapple is not attached check if in the air, if in the air keep boost until floor
-        // transform.Translate(dir * speed * Time.deltaTime);
-    }
-
-    Vector3 calculateCurrMove(){
-        float AdjustedSpeed = speed * Time.deltaTime;
-
-        Vector3 translate = new Vector3(AdjustedSpeed,-gforce,0);
-        // if grappling apply different physics
-        if(grappling){
-            // grapple speed combo is reseting after each grapple
-            translate = grappler.getDir() * AdjustedSpeed;
-            // only take into account the grappler y value if hes not on the floor/didnt jump
-            if(!onFloor && !jumped){
-                translate.y = grappler.getDir().y;
-            }
-            translate.y += -gforce;
-        //    translate *= AdjustedSpeed;
-        }
-        return translate;
-    }
 
     void resetSpeed(){
-        grappling = false;
         grappler.resetSuccessCounter();
         speed = initSpeed;
     }

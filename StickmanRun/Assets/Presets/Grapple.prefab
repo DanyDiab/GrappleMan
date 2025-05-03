@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6921574228544914142}
   - component: {fileID: 6704316419422329630}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6601776574744577740}
   - component: {fileID: 6769959773321975463}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232,7 +232,7 @@ GameObject:
   - component: {fileID: 5645094318130773804}
   - component: {fileID: 76940970004266435}
   - component: {fileID: 7232742775859590467}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Grapple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
