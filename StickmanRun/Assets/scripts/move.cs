@@ -52,7 +52,7 @@ public class move : MonoBehaviour
 
 
     void preserveAir(){
-        if(!onFloor && !Input.GetMouseButton(0)){
+        if(!onFloor && grappler.getState() != 2){
             if(airX == 0){
                 airX = rb.velocity.x;
             }
@@ -62,10 +62,6 @@ public class move : MonoBehaviour
         airX = 0;
         }
 
-    void resetSpeed(){
-        grappler.resetSuccessCounter();
-        speed = initSpeed;
-    }
 
 
     void OnCollisionEnter2D(Collision2D collision){
