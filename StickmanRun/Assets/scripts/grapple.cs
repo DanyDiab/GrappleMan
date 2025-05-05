@@ -37,9 +37,9 @@ public class Grapple : MonoBehaviour{
 
 
     void Start(){
-        speedBoost = 7;
-        length = 20;
-        grappleSpeed = 25;
+        speedBoost = 300;
+        length = 7;
+        grappleSpeed = 50;
         lineRenderer = GetComponentInChildren<LineRenderer>();
         addNewSuccess = true;
         rb = GetComponent<Rigidbody2D>();
@@ -54,7 +54,6 @@ public class Grapple : MonoBehaviour{
         // while the player holds down left click do normal grappler.
         // else send grapple back or reset it. 
 
-        Debug.Log(state);
         if(Input.GetMouseButton(0)){
             if(state == 0){
                 keepHeadInPlace(false);
@@ -89,15 +88,6 @@ public class Grapple : MonoBehaviour{
 
         }
 
-        // else if(startReturn){
-        //     sendGrappleBack();
-        // }
-        // else if(isCast){
-        //     sendHead();
-        // }
-        // if(addMove){
-        //     applyMove();
-        // }
 
     }
 
@@ -129,7 +119,8 @@ public class Grapple : MonoBehaviour{
     
     private void sendHead(){
         // back and -dir since i drew the head upside down
-        totalMoved += grappleSpeed * Time.deltaTime;
+
+        totalMoved = (transform.position - transform.parent.position).magnitude;
         Vector2 translation = transform.up  * grappleSpeed;
         rb.AddForce(translation, ForceMode2D.Force);
         if(totalMoved > length){
@@ -173,19 +164,20 @@ public class Grapple : MonoBehaviour{
         // }
     }
 
-//     private void applyMove(){
-//         Rigidbody2D playerRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
-//         if(totalGrapplerDisplacement == 0){
-//             originalPlayerPos = transform.parent.position;
-//             totalGrapplerDisplacement = (transform.parent.position - transform.position).magnitude;
-//         }
-//         totalPlayerDisplacement = (transform.parent.position - originalPlayerPos).magnitude;
-//         playerRb.AddForce(moveDir * currSpeed, ForceMode2D.Impulse);
-// // if displacement of player is geater than displacement of grappler
-//         if(totalPlayerDisplacement >= totalGrapplerDisplacement){
-//             resetStates();
-//         }
-//     }
+    private void applyMove(){
+        calculateMoveDirection();
+        Rigidbody2D playerRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
+        if(totalGrapplerDisplacement == 0){
+            originalPlayerPos = transform.parent.position;
+            totalGrapplerDisplacement = (transform.parent.position - transform.position).magnitude;
+        }
+        totalPlayerDisplacement = (transform.parent.position - originalPlayerPos).magnitude;
+        playerRb.AddForce(moveDir * currSpeed, ForceMode2D.Force);
+// if displacement of player is geater than displacement of grappler
+        // if(totalPlayerDisplacement >= totalGrapplerDisplacement){
+        //     resetStates();
+        // }
+    }
 
 
     private void drawLine(){
@@ -212,7 +204,6 @@ public class Grapple : MonoBehaviour{
             return;
         }
         if(collider.gameObject.layer == LayerMask.NameToLayer("Floor") || collider.tag == "Light"){
-            calculateMoveDirection();
             keepHeadInPlace(true);
             GetComponent<BoxCollider2D>().enabled = false;
             isAttached = true;

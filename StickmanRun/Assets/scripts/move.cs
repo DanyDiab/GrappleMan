@@ -39,9 +39,10 @@ public class move : MonoBehaviour
     }
 
     void FixedUpdate(){
+        Debug.Log(onFloor);
+
         // if not grappling, preserve air momentum
         preserveAir();
-        
         
 
         // move to the right by default
@@ -64,7 +65,7 @@ public class move : MonoBehaviour
 
 
 
-    void OnCollisionEnter2D(Collision2D collision){
+    void OnCollisionStay2D(Collision2D collision){
         if(collision.gameObject.layer == LayerMask.NameToLayer("Floor")){
             onFloor = true;
             return;
