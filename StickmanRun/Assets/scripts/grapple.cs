@@ -22,15 +22,11 @@ public class Grapple : MonoBehaviour{
     LineRenderer lineRenderer;
     int successCounter;
     public float speedBoost;
-    float successBoost;
-    bool addNewSuccess;
     Vector3 currMove;
     float currSpeed;
     Rigidbody2D rb;
     Vector2 moveDir;
     bool addMove;
-    Vector3 lastPos; 
-    float totalPlayerDisplacement;
     float totalGrapplerDisplacement;
     Vector3 originalPlayerPos;
     int state; // current state of the grappler
@@ -39,21 +35,13 @@ public class Grapple : MonoBehaviour{
     void Start(){
         speedBoost = 300;
         length = 7;
-        grappleSpeed = 50;
+        grappleSpeed = 75;
         lineRenderer = GetComponentInChildren<LineRenderer>();
-        addNewSuccess = true;
         rb = GetComponent<Rigidbody2D>();
-        successBoost = 20;
         resetStates();
     }
 
     void FixedUpdate(){
-
-
-
-        // while the player holds down left click do normal grappler.
-        // else send grapple back or reset it. 
-
         if(Input.GetMouseButton(0)){
             if(state == 0){
                 keepHeadInPlace(false);
@@ -81,14 +69,8 @@ public class Grapple : MonoBehaviour{
             case 3: 
                 sendGrappleBack();
                 break;
-                // idle
-            // default:
-            //     resetStates();
-            //     break;
 
         }
-
-
     }
 
     void LateUpdate()
@@ -118,7 +100,6 @@ public class Grapple : MonoBehaviour{
 
     
     private void sendHead(){
-        // back and -dir since i drew the head upside down
 
         totalMoved = (transform.position - transform.parent.position).magnitude;
         Vector2 translation = transform.up  * grappleSpeed;
@@ -131,7 +112,7 @@ public class Grapple : MonoBehaviour{
 
 // can i make a general function for moving and when the it reaches the end make the speed *-1?
     private void sendGrappleBack(){
-        // find the camera position to return the grapple to
+        // find the parent position to return the grapple to
         dir = transform.position - transform.parent.position;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
         Vector2 translation = transform.up  * grappleSpeed * -1;
@@ -140,28 +121,20 @@ public class Grapple : MonoBehaviour{
 
     public void resetStates(){
 
-        // set the transform back to 0,0,1
 
         // set state to idle/default
         state = 0;
         totalMoved = 0;
-        totalPlayerDisplacement = 0;
-        totalGrapplerDisplacement = 0;
         rb.velocity = Vector2.zero;
-        // transform.position = Vector3.forward;
         foreach(Transform child in transform){
             child.gameObject.SetActive(false);
         }
     }
 
     void calculateMoveDirection(){
-            // if the grapple is too close dont change the direction
-        // moveDir = Vector2.zero;
-        // if((transform.position - transform.parent.position).magnitude > .1){
             moveDir = transform.position - transform.parent.position;
             moveDir.Normalize();
             addMove = true;
-        // }
     }
 
     private void applyMove(){
@@ -171,12 +144,7 @@ public class Grapple : MonoBehaviour{
             originalPlayerPos = transform.parent.position;
             totalGrapplerDisplacement = (transform.parent.position - transform.position).magnitude;
         }
-        totalPlayerDisplacement = (transform.parent.position - originalPlayerPos).magnitude;
         playerRb.AddForce(moveDir * currSpeed, ForceMode2D.Force);
-// if displacement of player is geater than displacement of grappler
-        // if(totalPlayerDisplacement >= totalGrapplerDisplacement){
-        //     resetStates();
-        // }
     }
 
 
@@ -184,8 +152,6 @@ public class Grapple : MonoBehaviour{
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, transform.parent.position);
         lineRenderer.SetPosition(1, transform.position);
-        
-        // transform.rotation = Quaternion.LookRotation(Vector3.forward, transform.position - transform.parent.position);
     }
 
 
@@ -208,25 +174,11 @@ public class Grapple : MonoBehaviour{
             GetComponent<BoxCollider2D>().enabled = false;
             isAttached = true;
             state = 2;
-            if(addNewSuccess){
-                // currSpeed = successCounter * successBoost + speedBoost;
-                currSpeed = speedBoost;
-                addNewSuccess = false;
-                successCounter++;
-            }
+            currSpeed = speedBoost;
 
         }
 
 
-    }
-
-    void OnTriggerExit2D(Collider2D collider){
-
-        if(collider.gameObject.layer == LayerMask.NameToLayer("Floor") || collider.tag == "Light"){
-            addNewSuccess = true;
-            isAttached = false;
-        }
-        
     }
 
     public bool getIsAttached(){
