@@ -26,8 +26,6 @@ public class move : MonoBehaviour
     }
 
     void FixedUpdate(){
-        Debug.Log(onFloor);
-
         // if in air, preserve momentum
         preserveAir();
     }
@@ -35,7 +33,7 @@ public class move : MonoBehaviour
 
 
     void preserveAir(){
-        if(!onFloor && grappler.getState() != 2){
+        if(!onFloor && grappler.getState() != grapplerState.PullingPlayer){
             if(airX == 0){
                 airX = rb.velocity.x;
             }

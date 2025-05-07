@@ -3,6 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum grapplerState {
+    Idle,
+    Casting,
+    Attached,
+    PullingPlayer,
+    PullingObject,
+    Swinging,
+    Retracting
+}
+
 public class Grapple : MonoBehaviour{
 
     // how far the grappler can reach
@@ -12,10 +23,6 @@ public class Grapple : MonoBehaviour{
     float grappleSpeed;
 
     float totalMoved;
-    bool isCast;
-
-    bool startReturn;
-    bool isAttached;
 
     protected LineRenderer lineRenderer;
     public float speedBoost;
@@ -26,15 +33,79 @@ public class Grapple : MonoBehaviour{
     float totalGrapplerDisplacement;
     protected int state; // current state of the grappler
     static bool didDrawLine;
+    bool leftClick;
+    bool rightClick;
+    bool ePressed;
+    grapplerState currState;
 
 
     protected void Start(){
-        speedBoost = 300;
-        length = 7;
-        grappleSpeed = 75;
+        currState = grapplerState.Idle;
+        speedBoost = 50;
+        length = 15;
+        grappleSpeed = 25;
         lineRenderer = GetComponentInChildren<LineRenderer>();
         rb = GetComponent<Rigidbody2D>();
         resetStates();
+    }
+
+
+    // e = cast grappler.
+    // holding left click = pull player in 
+    // holding right click push player out  or pull object towards player
+    // holding both = no push or pull allwing player to swing
+
+    void Update()
+    {
+        Debug.Log(currState);
+        ePressed = Input.GetKey(KeyCode.E);
+        leftClick = Input.GetMouseButton(0);
+        rightClick = Input.GetMouseButton(1);
+        switch(currState){
+            case grapplerState.Idle:
+                resetStates();
+                if(ePressed){
+                    cast();
+                    currState = grapplerState.Casting;
+                }
+                break;
+            case grapplerState.Casting:
+                sendHead();
+                if(totalMoved > length){
+                     currState = grapplerState.Retracting;
+                }
+                break;
+            case grapplerState.Attached:
+
+                if(leftClick){
+                    currState = grapplerState.PullingPlayer;
+                }
+                else if(rightClick){
+                    currState = grapplerState.PullingObject;
+                }
+                else if(ePressed){
+                    currState = grapplerState.Retracting;
+                }
+                break;
+            case grapplerState.PullingPlayer:
+                if(!leftClick) currState = grapplerState.Attached;
+                calculateMoveDirection();
+                applyMove();
+                break;
+            case grapplerState.PullingObject:
+                if(!rightClick) currState = grapplerState.Attached;
+                // pulling function
+                break;
+            case grapplerState.Swinging:
+                break;
+            case grapplerState.Retracting:
+                keepHeadInPlace(false);
+                sendGrappleBack();
+                if((transform.position - transform.parent.position).magnitude <= 0.3f){
+                     currState = grapplerState.Idle;
+                }
+                break;
+        }
     }
 
     void LateUpdate()
@@ -55,7 +126,6 @@ public class Grapple : MonoBehaviour{
             child.gameObject.SetActive(true);
         }
         GetComponent<BoxCollider2D>().enabled = true;
-       state = 1;
     }
 
     
@@ -64,9 +134,7 @@ public class Grapple : MonoBehaviour{
         totalMoved = (transform.position - transform.parent.position).magnitude;
         Vector2 translation = transform.up  * grappleSpeed;
         rb.AddForce(translation, ForceMode2D.Force);
-        if(totalMoved > length){
-            state = 3;
-        }
+
     }
 
 
@@ -76,12 +144,12 @@ public class Grapple : MonoBehaviour{
         dir = transform.position - transform.parent.position;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
         Vector2 translation = transform.up  * grappleSpeed * -1;
-        rb.AddForce(translation);
+        rb.velocity = translation;
+        totalMoved -= grappleSpeed * Time.deltaTime;
     }
 
     public void resetStates(){
         // set state to idle/default
-        state = 0;
         totalMoved = 0;
         rb.velocity = Vector2.zero;
         foreach(Transform child in transform){
@@ -92,7 +160,6 @@ public class Grapple : MonoBehaviour{
     void calculateMoveDirection(){
             moveDir = transform.position - transform.parent.position;
             moveDir.Normalize();
-            addMove = true;
     }
 
     protected void applyMove(){
@@ -120,30 +187,19 @@ public class Grapple : MonoBehaviour{
 
     }
     void OnTriggerStay2D(Collider2D collider){
-        if(collider.tag == "Player" && (state == 2 || state == 3)){
-            resetStates();
-            return;
-        }
+        // Debug.Log(collider.tag);
         if(collider.gameObject.layer == LayerMask.NameToLayer("Floor") || collider.tag == "Light"){
             keepHeadInPlace(true);
             GetComponent<BoxCollider2D>().enabled = false;
-            isAttached = true;
-            state = 2;
+            currState = grapplerState.Attached;
             currSpeed = speedBoost;
-
         }
-
-
-    }
-
-    public bool getIsAttached(){
-        return isAttached;
     }
     
     public Vector2 getDir(){
         return dir;
     }
-    public int getState(){
-        return state;
+    public grapplerState getState(){
+        return currState;
     }
 }
