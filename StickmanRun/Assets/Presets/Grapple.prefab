@@ -231,7 +231,6 @@ GameObject:
   - component: {fileID: 6550772659139318324}
   - component: {fileID: 5645094318130773804}
   - component: {fileID: 76940970004266435}
-  - component: {fileID: 7232742775859590467}
   m_Layer: 7
   m_Name: Grapple
   m_TagString: Untagged
@@ -328,15 +327,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.25710964, y: 0.24948823}
   m_EdgeRadius: 0
---- !u!114 &7232742775859590467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7715157539524024608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8593294f7a4a8ac4c92e0d61910bdcb7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

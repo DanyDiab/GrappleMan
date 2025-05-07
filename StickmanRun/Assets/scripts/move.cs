@@ -6,32 +6,19 @@ using UnityEngine;
 
 public class move : MonoBehaviour
 {
-    private float speed;
-    private float initSpeed;
 
     public float jumpForce; 
     private bool onFloor;
-    private bool jumped;
     private Grapple grappler;
-    Vector3 currMove;
-    Vector3 grappleDir;
     Rigidbody2D rb;
     float airX;
-    float airSpeed;
-    Vector3 initAirPos;
     public int jumpFrames;
-    int currFrames;
     public Vector2 jumpDir;
-
-
-    // Start is called before the first frame update
 
     // increase and decrease speed with d and s?
     void Start()
     {
         jumpFrames = 2;
-        initSpeed = 10;
-        speed = initSpeed;
         jumpForce = 20f;
         grappler = FindFirstObjectByType<Grapple>();
         rb = GetComponent<Rigidbody2D>();
@@ -41,13 +28,8 @@ public class move : MonoBehaviour
     void FixedUpdate(){
         Debug.Log(onFloor);
 
-        // if not grappling, preserve air momentum
+        // if in air, preserve momentum
         preserveAir();
-        
-
-        // move to the right by default
-
-
     }
 
 

@@ -8,7 +8,6 @@ public class Grapple : MonoBehaviour{
     // how far the grappler can reach
     float length;
     Vector2 dir;
-
     Vector2 attachPos;
     float grappleSpeed;
 
@@ -17,22 +16,19 @@ public class Grapple : MonoBehaviour{
 
     bool startReturn;
     bool isAttached;
-    public event Action<float> OnAttach;
 
-    LineRenderer lineRenderer;
-    int successCounter;
+    protected LineRenderer lineRenderer;
     public float speedBoost;
-    Vector3 currMove;
     float currSpeed;
-    Rigidbody2D rb;
+    protected Rigidbody2D rb;
     Vector2 moveDir;
     bool addMove;
     float totalGrapplerDisplacement;
-    Vector3 originalPlayerPos;
-    int state; // current state of the grappler
+    protected int state; // current state of the grappler
+    static bool didDrawLine;
 
 
-    void Start(){
+    protected void Start(){
         speedBoost = 300;
         length = 7;
         grappleSpeed = 75;
@@ -41,46 +37,10 @@ public class Grapple : MonoBehaviour{
         resetStates();
     }
 
-    void FixedUpdate(){
-        if(Input.GetMouseButton(0)){
-            if(state == 0){
-                keepHeadInPlace(false);
-                cast();
-            }
-        }
-        else if(state != 0){
-            if(state == 2){
-                resetStates(); 
-                return;              
-            }
-            state = 3;
-        }
-
-        switch(state){
-            // isCast;
-            case 1:
-                sendHead();
-                break;
-                // addMove
-            case 2:
-                applyMove();
-                break;
-                // Start Return
-            case 3: 
-                sendGrappleBack();
-                break;
-
-        }
-    }
-
     void LateUpdate()
     {
         drawLine();
     }
-
-
-
-
 
     public void cast(){
         Vector3 startPos = transform.parent.position;
@@ -99,7 +59,7 @@ public class Grapple : MonoBehaviour{
     }
 
     
-    private void sendHead(){
+    protected void sendHead(){
 
         totalMoved = (transform.position - transform.parent.position).magnitude;
         Vector2 translation = transform.up  * grappleSpeed;
@@ -111,7 +71,7 @@ public class Grapple : MonoBehaviour{
 
 
 // can i make a general function for moving and when the it reaches the end make the speed *-1?
-    private void sendGrappleBack(){
+    protected void sendGrappleBack(){
         // find the parent position to return the grapple to
         dir = transform.position - transform.parent.position;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
@@ -120,8 +80,6 @@ public class Grapple : MonoBehaviour{
     }
 
     public void resetStates(){
-
-
         // set state to idle/default
         state = 0;
         totalMoved = 0;
@@ -137,25 +95,22 @@ public class Grapple : MonoBehaviour{
             addMove = true;
     }
 
-    private void applyMove(){
+    protected void applyMove(){
         calculateMoveDirection();
         Rigidbody2D playerRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
-        if(totalGrapplerDisplacement == 0){
-            originalPlayerPos = transform.parent.position;
-            totalGrapplerDisplacement = (transform.parent.position - transform.position).magnitude;
-        }
         playerRb.AddForce(moveDir * currSpeed, ForceMode2D.Force);
     }
 
 
-    private void drawLine(){
+    protected void drawLine(){
+        if(lineRenderer == null) return;
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, transform.parent.position);
         lineRenderer.SetPosition(1, transform.position);
     }
 
 
-    private void keepHeadInPlace(bool apply){
+    protected void keepHeadInPlace(bool apply){
         if(apply){
             rb.constraints = RigidbodyConstraints2D.FreezePosition;
             return;
@@ -187,10 +142,6 @@ public class Grapple : MonoBehaviour{
     
     public Vector2 getDir(){
         return dir;
-    }
-
-    public void resetSuccessCounter(){
-        successCounter = 0;
     }
     public int getState(){
         return state;
