@@ -8,6 +8,7 @@ TagManager:
   - Grappler
   - Chandelier
   - Light
+  - Pull
   layers:
   - Default
   - TransparentFX

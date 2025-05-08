@@ -22,7 +22,7 @@ public class Grapple : MonoBehaviour{
     Vector2 attachPos;
     float grappleSpeed;
 
-    float totalMoved;
+    float distance;
 
     protected LineRenderer lineRenderer;
     public float speedBoost;
@@ -37,16 +37,19 @@ public class Grapple : MonoBehaviour{
     bool rightClick;
     bool ePressed;
     grapplerState currState;
+    bool reverseDir;
+    Rigidbody2D pullRb; 
 
 
     protected void Start(){
         currState = grapplerState.Idle;
-        speedBoost = 50;
-        length = 15;
+        speedBoost = 25;
+        length = 20;
         grappleSpeed = 25;
         lineRenderer = GetComponentInChildren<LineRenderer>();
         rb = GetComponent<Rigidbody2D>();
         resetStates();
+        reverseDir = false;
     }
 
 
@@ -57,7 +60,7 @@ public class Grapple : MonoBehaviour{
 
     void Update()
     {
-        Debug.Log(currState);
+        // Debug.Log(currState);
         ePressed = Input.GetKey(KeyCode.E);
         leftClick = Input.GetMouseButton(0);
         rightClick = Input.GetMouseButton(1);
@@ -70,13 +73,13 @@ public class Grapple : MonoBehaviour{
                 }
                 break;
             case grapplerState.Casting:
-                sendHead();
-                if(totalMoved > length){
+                moveGrappler(true);
+                if(distance > length){
                      currState = grapplerState.Retracting;
                 }
                 break;
             case grapplerState.Attached:
-
+                keepHeadInPlace(true);
                 if(leftClick){
                     currState = grapplerState.PullingPlayer;
                 }
@@ -95,13 +98,28 @@ public class Grapple : MonoBehaviour{
             case grapplerState.PullingObject:
                 if(!rightClick) currState = grapplerState.Attached;
                 // pulling function
+                if(pullRb != null){
+                    // pull object
+                    currState = grapplerState.Retracting;
+                    return;
+                }
+                calculateMoveDirection();
+                moveDir *= -1;
+                applyMove();
+                distance = Vector2.Distance(transform.position, transform.parent.position);
+                if(distance > length){
+                     currState = grapplerState.Retracting;
+                }
                 break;
             case grapplerState.Swinging:
                 break;
             case grapplerState.Retracting:
+                if(pullRb != null){
+                    pullRb.position = transform.position; 
+                }
                 keepHeadInPlace(false);
-                sendGrappleBack();
-                if((transform.position - transform.parent.position).magnitude <= 0.3f){
+                moveGrappler(false);
+                if(distance <= 0.5f){
                      currState = grapplerState.Idle;
                 }
                 break;
@@ -121,7 +139,9 @@ public class Grapple : MonoBehaviour{
         Vector3 worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
         dir = worldMousePos - transform.position;
         dir.Normalize();
-        transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
+
         foreach(Transform child in transform){
             child.gameObject.SetActive(true);
         }
@@ -129,28 +149,25 @@ public class Grapple : MonoBehaviour{
     }
 
     
-    protected void sendHead(){
-
-        totalMoved = (transform.position - transform.parent.position).magnitude;
-        Vector2 translation = transform.up  * grappleSpeed;
-        rb.AddForce(translation, ForceMode2D.Force);
-
-    }
-
-
-// can i make a general function for moving and when the it reaches the end make the speed *-1?
-    protected void sendGrappleBack(){
-        // find the parent position to return the grapple to
-        dir = transform.position - transform.parent.position;
-        transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
-        Vector2 translation = transform.up  * grappleSpeed * -1;
-        rb.velocity = translation;
-        totalMoved -= grappleSpeed * Time.deltaTime;
+    protected void moveGrappler(bool forward){
+        if(!forward){
+            dir = (transform.parent.position - transform.position).normalized;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            if(!reverseDir){
+                transform.rotation = Quaternion.Euler(0f, 0f, angle + 90f);
+                reverseDir = true;
+            }
+        }
+        rb.velocity = dir * grappleSpeed;
+        distance = Vector2.Distance(transform.position, transform.parent.position);
+        // Debug.Log(distance);
     }
 
     public void resetStates(){
         // set state to idle/default
-        totalMoved = 0;
+        pullRb = null;
+        distance = 0;
+        reverseDir = false;
         rb.velocity = Vector2.zero;
         foreach(Transform child in transform){
             child.gameObject.SetActive(false);
@@ -163,9 +180,8 @@ public class Grapple : MonoBehaviour{
     }
 
     protected void applyMove(){
-        calculateMoveDirection();
         Rigidbody2D playerRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
-        playerRb.AddForce(moveDir * currSpeed, ForceMode2D.Force);
+        playerRb.AddForce(speedBoost * moveDir, ForceMode2D.Force);
     }
 
 
@@ -183,16 +199,20 @@ public class Grapple : MonoBehaviour{
             return;
         }
         rb.constraints = RigidbodyConstraints2D.None;
-
-
     }
+
     void OnTriggerStay2D(Collider2D collider){
         // Debug.Log(collider.tag);
-        if(collider.gameObject.layer == LayerMask.NameToLayer("Floor") || collider.tag == "Light"){
+        if(collider.gameObject.layer == LayerMask.NameToLayer("Floor") || collider.tag == "Light" || collider.tag == "Pull"){
             keepHeadInPlace(true);
             GetComponent<BoxCollider2D>().enabled = false;
             currState = grapplerState.Attached;
             currSpeed = speedBoost;
+        }
+        if(collider.tag == "Pull"){
+            if(currState == grapplerState.PullingObject){
+                pullRb = collider.attachedRigidbody;
+            }
         }
     }
     
