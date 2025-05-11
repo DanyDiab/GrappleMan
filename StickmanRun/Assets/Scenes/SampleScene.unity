@@ -11101,8 +11101,9 @@ GameObject:
   - component: {fileID: 321172358}
   - component: {fileID: 321172357}
   - component: {fileID: 321172356}
-  m_Layer: 8
-  m_Name: PullingTest
+  - component: {fileID: 321172360}
+  m_Layer: 10
+  m_Name: Crate
   m_TagString: Pull
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11149,7 +11150,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: be826489f3bffc648866305137423c00, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -11192,18 +11193,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.000000074505806, y: -0.001682952}
+  m_Offset: {x: 0.005002022, y: 0.0031769276}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.2, y: 0.2}
+    oldSize: {x: 2, y: 2}
     newSize: {x: 0.2, y: 0.2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.19889435, y: 0.18543029}
+  m_Size: {x: 1.9007015, y: 1.9042954}
   m_EdgeRadius: 0
 --- !u!50 &321172358
 Rigidbody2D:
@@ -11218,9 +11219,9 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 5
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -11242,11 +11243,23 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 29.8, y: 5.89, z: 0.077151395}
-  m_LocalScale: {x: 10, y: 10, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &321172360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321172355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92e452383bbcc04084a96964bbd1518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &365980861
 GameObject:
   m_ObjectHideFlags: 0
@@ -31949,6 +31962,7 @@ GameObject:
   - component: {fileID: 1260823120}
   - component: {fileID: 1260823118}
   - component: {fileID: 1260823122}
+  - component: {fileID: 1260823123}
   m_Layer: 6
   m_Name: StickMan
   m_TagString: Player
@@ -32072,6 +32086,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8943c5bf69b5f46b06a0094ccb129a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!233 &1260823123
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260823117}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 3
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: -10, y: 2}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1529856876 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7715157539524024608, guid: f16ade7a70177b24595222cddad81c0c, type: 3}
