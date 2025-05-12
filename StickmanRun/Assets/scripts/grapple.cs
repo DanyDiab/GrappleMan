@@ -44,11 +44,13 @@ public class Grapple : MonoBehaviour{
     bool attachJoint;
     float swingSpeed;
     HingeJoint2D hinge;
+    GameObject parent;
+    Vector3 stuckPos; 
 
 
     protected void Start(){
         currState = grapplerState.Idle;
-        speedBoost = 25;
+        speedBoost = 350;
         length = 20;
         grappleSpeed = 25;
         lineRenderer = GetComponentInChildren<LineRenderer>();
@@ -71,7 +73,7 @@ public class Grapple : MonoBehaviour{
     // add force to move player to emulat emoving faster after a longer time
     // 
 
-    void Update()
+    void FixedUpdate()
     {
         // Debug.Log(currState);
         ePressed = Input.GetKey(KeyCode.E);
@@ -94,15 +96,12 @@ public class Grapple : MonoBehaviour{
             case grapplerState.Attached:
                 keepHeadInPlace(true);
                 if(leftClick){
-                    hinge.enabled = false;
                     currState = grapplerState.PullingPlayer;
                 }
                 else if(rightClick){
-                    hinge.enabled = false;
                     currState = grapplerState.PullingObject;
                 }
                 else if(ePressed){
-                    hinge.enabled = false;
                     currState = grapplerState.Retracting;
                 }
                 break;
@@ -139,6 +138,9 @@ public class Grapple : MonoBehaviour{
     void LateUpdate()
     {
         drawLine();
+        if(currState == grapplerState.Attached){
+             transform.position = stuckPos;
+        }
     }
 
     public void cast(){
@@ -206,6 +208,7 @@ public class Grapple : MonoBehaviour{
 
     protected void keepHeadInPlace(bool apply){
         if(apply){
+            stuckPos = transform.position;
             rb.constraints = RigidbodyConstraints2D.FreezePosition;
             return;
         }
@@ -230,6 +233,7 @@ public class Grapple : MonoBehaviour{
             GetComponent<BoxCollider2D>().enabled = false;
             currState = grapplerState.Attached;
             currSpeed = speedBoost;
+            stuckPos = transform.position;
         }
         if(collider.tag == "Pull"){
             pullObject = collider.GetComponent<Pullable>();

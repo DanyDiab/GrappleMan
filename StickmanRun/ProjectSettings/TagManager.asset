@@ -9,6 +9,8 @@ TagManager:
   - Chandelier
   - Light
   - Pull
+  - PPBody
+  - PPTop
   layers:
   - Default
   - TransparentFX
@@ -21,7 +23,7 @@ TagManager:
   - Background
   - Floor
   - Pullables
-  - 
+  - PressurePlate
   - 
   - 
   - 
@@ -46,9 +48,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Background
+  - name: EnvObjs
     uniqueID: 881735641
     locked: 0
-  - name: Player
+  - name: Floor
     uniqueID: 4145695469
+    locked: 0
+  - name: Player
+    uniqueID: 3607120505
     locked: 0
