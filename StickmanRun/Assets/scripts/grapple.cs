@@ -226,6 +226,10 @@ public class Grapple : MonoBehaviour{
         return;
     }
 
+    void pointGrapplerToParent(){
+        
+    }
+
     void OnTriggerStay2D(Collider2D collider){
         // Debug.Log(collider.tag);
         if(collider.gameObject.layer == LayerMask.NameToLayer("Floor") || collider.tag == "Light" || collider.tag == "Pull"){

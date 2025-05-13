@@ -33,7 +33,7 @@ public class move : MonoBehaviour
 
 
     void preserveAir(){
-        if(!onFloor && grappler.getState() != grapplerState.PullingPlayer){
+        if(!onFloor && grappler.getState() != grapplerState.PullingPlayer && grappler.getState() != grapplerState.PullingObject){
             if(airX == 0){
                 airX = rb.velocity.x;
             }
