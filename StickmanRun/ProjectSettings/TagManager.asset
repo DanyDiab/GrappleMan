@@ -57,3 +57,6 @@ TagManager:
   - name: Player
     uniqueID: 3607120505
     locked: 0
+  - name: BlackBox
+    uniqueID: 1059171847
+    locked: 0

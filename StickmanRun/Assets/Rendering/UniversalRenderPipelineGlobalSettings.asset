@@ -15,9 +15,9 @@ MonoBehaviour:
   k_AssetVersion: 3
   m_RenderingLayerNames:
   - Default
-  m_ValidRenderingLayers: 3
-  lightLayerName0: 
-  lightLayerName1: 
+  m_ValidRenderingLayers: 2
+  lightLayerName0: Outdoor
+  lightLayerName1: Indoor
   lightLayerName2: 
   lightLayerName3: 
   lightLayerName4: 
