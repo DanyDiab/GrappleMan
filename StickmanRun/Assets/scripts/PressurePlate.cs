@@ -20,13 +20,13 @@ public class PressurePlate : MonoBehaviour
         // ignore collision with the floor
         if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor") || collider2D.gameObject.tag == "PPBody") return;
         spriteRenderer.sprite = pressed;
-        door.open();
+        door.startOpen();
     }
 
     void OnTriggerExit2D(Collider2D collider2D){
         // ignore collision with the floor
         if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor") || collider2D.gameObject.tag == "PPBody") return;
         spriteRenderer.sprite = notPressed;
-        door.close();
+        door.startClose();
     }
 }
