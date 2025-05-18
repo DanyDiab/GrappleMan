@@ -46,6 +46,8 @@ public class Grapple : MonoBehaviour{
     HingeJoint2D hinge;
     GameObject parent;
     Vector3 stuckPos; 
+    Vector2 lastPos;
+    public LayerMask collisionMask;
 
 
     protected void Start(){
@@ -59,7 +61,7 @@ public class Grapple : MonoBehaviour{
         reverseDir = false;
         attachJoint = true;
         swingSpeed = 10;
-        hinge = transform.parent.gameObject.GetComponent<HingeJoint2D>();
+        lastPos = transform.position;
     }
 
 
@@ -75,10 +77,10 @@ public class Grapple : MonoBehaviour{
 
     void FixedUpdate()
     {
-        // Debug.Log(currState);
         ePressed = Input.GetKey(KeyCode.E);
         leftClick = Input.GetMouseButton(0);
         rightClick = Input.GetMouseButton(1);
+        distance = Vector2.Distance(transform.parent.position, transform.position);
         switch(currState){
             case grapplerState.Idle:
                 resetStates();
@@ -107,6 +109,12 @@ public class Grapple : MonoBehaviour{
                 break;
             case grapplerState.Retracting:
                 retractGrappler();
+                if(distance <= 0.5f){
+                    currState = grapplerState.Idle;
+                    if(pullObject != null){
+                        pullObject.setIsPulled(false);
+                    }
+                }
                 break;
             case grapplerState.PullingPlayer:
                 if(!leftClick) currState = grapplerState.Attached;
@@ -127,11 +135,17 @@ public class Grapple : MonoBehaviour{
                 calculateMoveDirection();
                 moveDir *= -1;
                 applyMove();      
-                distance = Vector2.Distance(transform.parent.position, transform.position);
                 if(distance > length){
                      currState = grapplerState.Retracting;
                 }
             break;
+        }
+    }
+
+    void Update()
+    {
+        if(currState == grapplerState.Casting){
+            rayCastCollide();   
         }
     }
 
@@ -217,33 +231,35 @@ public class Grapple : MonoBehaviour{
     void retractGrappler(){
         keepHeadInPlace(false);
         moveGrappler(false);
-        if(distance <= 0.5f){
-            currState = grapplerState.Idle;
-            if(pullObject != null){
-                pullObject.setIsPulled(false);
-            }
-        }
+
         return;
     }
 
-    void pointGrapplerToParent(){
-        
+    void rayCastCollide(){
+        RaycastHit2D hit = Physics2D.Linecast(lastPos,transform.position,collisionMask);
+        if(hit.collider != null){
+            grapplerAttach(hit.collider);
+        }
+         lastPos = transform.position;
     }
 
-    void OnTriggerStay2D(Collider2D collider){
-        // Debug.Log(collider.tag);
-        if(collider.gameObject.layer == LayerMask.NameToLayer("Floor") || collider.tag == "Light" || collider.tag == "Pull"){
-            keepHeadInPlace(true);
-            GetComponent<BoxCollider2D>().enabled = false;
-            currState = grapplerState.Attached;
-            currSpeed = speedBoost;
-            stuckPos = transform.position;
-        }
+    void grapplerAttach(Collider2D collider){
+        keepHeadInPlace(true);
+        GetComponent<BoxCollider2D>().enabled = false;
+        currState = grapplerState.Attached;
+        currSpeed = speedBoost;
+        stuckPos = transform.position;
         if(collider.tag == "Pull"){
             pullObject = collider.GetComponent<Pullable>();
         }
-        
     }
+
+    // void OnTriggerStay2D(Collider2D collider){
+    //     // Debug.Log(collider.tag);
+    //     if(collider.tag == "Player"){
+            
+    //     }
+    // }
     
     public Vector2 getDir(){
         return dir;

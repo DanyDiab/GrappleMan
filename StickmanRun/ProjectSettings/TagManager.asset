@@ -12,6 +12,7 @@ TagManager:
   - PPBody
   - PPTop
   - Feet
+  - Attach
   layers:
   - Default
   - TransparentFX
@@ -25,7 +26,7 @@ TagManager:
   - Floor
   - Pullables
   - PressurePlate
-  - 
+  - Attachables
   - 
   - 
   - 
