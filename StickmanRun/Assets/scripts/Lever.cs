@@ -16,11 +16,10 @@ public class Lever : MonoBehaviour
     public Sprite notActiveSprite;
     public Sprite activeSprite;
     // variable to keep track of when we initalliy change states to set run intial methods 
-    bool initSwapState;
+    Grapple grapple;
 
     void Start()
     {
-        initSwapState = false;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         currState = LeverState.NotActive;
     }
@@ -28,18 +27,61 @@ public class Lever : MonoBehaviour
 
     void Update()
     {
-        switch(currState){
+        switch (currState)
+        {
             // wait for the stick to be attacghed to set the state to off
             case LeverState.NotActive:
+                spriteRenderer.sprite = notActiveSprite;
                 break;
             // 
             case LeverState.Off:
                 spriteRenderer.sprite = activeSprite;
+        Debug.Log(currState);
+
+                Debug.Log(grapple);
+                if (grapple != null && grapple.getState() == grapplerState.PullingObject)
+                {
+                    grapple.resetStates();
+                    BoxCollider2D[] colliders = GetComponentsInChildren<BoxCollider2D>(true);
+                    foreach (BoxCollider2D col in colliders)
+                    {
+                        col.enabled = false;
+                        currState = LeverState.On;
+
+                    }
+                    grapple = null;
+                }
                 break;
             case LeverState.On:
-                spriteRenderer.flipY = true;
+                spriteRenderer.flipX = true;
                 break;
         }
     }
+
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.tag == "Stick" && currState == LeverState.NotActive)
+        {
+
+            Destroy(collision.gameObject);
+            BoxCollider2D[] colliders = GetComponentsInChildren<BoxCollider2D>(true);
+            foreach (BoxCollider2D col in colliders)
+            {
+                col.enabled = true;
+            }
+            currState = LeverState.Off;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Grappler")
+        {
+            grapple = collision.GetComponentInChildren<Grapple>();
+        }
+    }
+
+
 
 }

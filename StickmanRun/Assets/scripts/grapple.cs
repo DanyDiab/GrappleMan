@@ -81,64 +81,70 @@ public class Grapple : MonoBehaviour{
         leftClick = Input.GetMouseButton(0);
         rightClick = Input.GetMouseButton(1);
         distance = Vector2.Distance(transform.parent.position, transform.position);
-        switch(currState){
+        // Debug.Log(currState);
+        switch (currState)
+        {
             case grapplerState.Idle:
                 resetStates();
-                if(ePressed){
+                if (ePressed)
+                {
                     cast();
                     currState = grapplerState.Casting;
                 }
                 break;
             case grapplerState.Casting:
                 moveGrappler(true);
-                if(distance > length){
-                     currState = grapplerState.Retracting;
+                if (distance > length)
+                {
+                    currState = grapplerState.Retracting;
                 }
                 break;
             case grapplerState.Attached:
                 keepHeadInPlace(true);
-                if(leftClick){
+                if (leftClick)
+                {
                     currState = grapplerState.PullingPlayer;
                 }
-                else if(rightClick){
+                else if (rightClick)
+                {
                     currState = grapplerState.PullingObject;
                 }
-                else if(ePressed){
+                else if (ePressed)
+                {
                     currState = grapplerState.Retracting;
                 }
                 break;
             case grapplerState.Retracting:
                 retractGrappler();
-                if(distance <= 0.5f){
-                    currState = grapplerState.Idle;
-                    if(pullObject != null){
-                        pullObject.setIsPulled(false);
-                    }
+                if (pullObject != null){
+                    pullObject.setIsPulled(false);
                 }
                 break;
             case grapplerState.PullingPlayer:
-                if(!leftClick) currState = grapplerState.Attached;
+                if (!leftClick) currState = grapplerState.Attached;
                 calculateMoveDirection();
                 applyMove();
                 break;
             case grapplerState.PullingObject:
                 // pulling function
-                if(pullObject != null){
+                if (pullObject != null)
+                {
                     // pull object
                     pullObject.getRb().velocity = rb.velocity;
                     pullObject.setIsPulled(true);
                     retractGrappler();
                     break;
                 }
-                
-                if(!rightClick) currState = grapplerState.Attached;
+
+                if (!rightClick) currState = grapplerState.Attached;
                 calculateMoveDirection();
                 moveDir *= -1;
-                applyMove();      
-                if(distance > length){
-                     currState = grapplerState.Retracting;
+                applyMove();
+                if (distance > length)
+                {
+                    currState = grapplerState.Retracting;
                 }
-            break;
+                break;
         }
     }
 
@@ -231,7 +237,9 @@ public class Grapple : MonoBehaviour{
     void retractGrappler(){
         keepHeadInPlace(false);
         moveGrappler(false);
-
+        if (distance <= 0.5f){
+            currState = grapplerState.Idle;
+        }
         return;
     }
 
@@ -249,8 +257,11 @@ public class Grapple : MonoBehaviour{
         currState = grapplerState.Attached;
         currSpeed = speedBoost;
         stuckPos = transform.position;
-        if(collider.tag == "Pull"){
-            pullObject = collider.GetComponent<Pullable>();
+        // Debug.Log(collider.gameObject.layer == LayerMask.NameToLayer("Pullables"));
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Pullables"))
+        {
+            pullObject = collider.GetComponentInParent<Pullable>();
+            
         }
     }
 
