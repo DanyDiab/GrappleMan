@@ -11,24 +11,21 @@ public class Pullable : MonoBehaviour
     // Start is called before the first frame update
 
 
-    void Start()
-    {
+    void Start(){
         gScale = 2;
         rb = GetComponent<Rigidbody2D>();
     }
-    void LateUpdate()
-    {
-        if (isPulled && isStuck)
-        {
-            isStuck = false;
-            rb.gravityScale = gScale;
-            return;
-        }
-        if (isStuck)
-        {
+    void LateUpdate(){
+        if (isStuck){
+            if (isPulled){
+                isStuck = false;
+                rb.gravityScale = gScale;
+                return;
+            }
             rb.gravityScale = 0f;
             rb.velocity = Vector2.zero;
-        } 
+            return;
+        }   
     }
 
     public void setIsPulled(bool pulled)

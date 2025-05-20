@@ -48,9 +48,11 @@ public class Grapple : MonoBehaviour{
     Vector3 stuckPos; 
     Vector2 lastPos;
     public LayerMask collisionMask;
+    public event OnGrappleAttach OnGrapple;
 
 
-    protected void Start(){
+    protected void Start()
+    {
         currState = grapplerState.Idle;
         speedBoost = 350;
         length = 20;
@@ -164,6 +166,10 @@ public class Grapple : MonoBehaviour{
     }
 
     public void cast(){
+        foreach(Transform child in transform){
+            child.gameObject.SetActive(true);
+        }
+        // Vector3 startPos = new Vector3(transform.parent.position.x,transform.position.y + 2,1);
         Vector3 startPos = transform.parent.position;
         transform.position = startPos;
         Vector3 mousePos = Input.mousePosition;
@@ -174,9 +180,7 @@ public class Grapple : MonoBehaviour{
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
 
-        foreach(Transform child in transform){
-            child.gameObject.SetActive(true);
-        }
+
         GetComponent<BoxCollider2D>().enabled = true;
     }
 
@@ -248,12 +252,14 @@ public class Grapple : MonoBehaviour{
     void rayCastCollide(){
         RaycastHit2D hit = Physics2D.Linecast(lastPos,transform.position,collisionMask);
         if(hit.collider != null){
+            Debug.Log("collided with: " + hit.collider.name);
             grapplerAttach(hit.collider);
         }
          lastPos = transform.position;
     }
 
     void grapplerAttach(Collider2D collider){
+        OnGrapple?.Invoke();
         keepHeadInPlace(true);
         GetComponent<BoxCollider2D>().enabled = false;
         currState = grapplerState.Attached;
@@ -267,14 +273,17 @@ public class Grapple : MonoBehaviour{
         }
     }
 
+    public delegate void OnGrappleAttach();
+
     // void OnTriggerStay2D(Collider2D collider){
     //     // Debug.Log(collider.tag);
     //     if(collider.tag == "Player"){
-            
+
     //     }
     // }
-    
-    public Vector2 getDir(){
+
+    public Vector2 getDir()
+    {
         return dir;
     }
     public grapplerState getState(){
