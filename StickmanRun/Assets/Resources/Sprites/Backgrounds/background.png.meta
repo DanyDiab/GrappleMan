@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 03748127091aec94f911def077997fc7
+guid: 2aa8b50034528604bafdea40ce66d4a7
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -51,7 +51,7 @@ TextureImporter:
   spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
-  alphaUsage: 1
+  alphaUsage: 0
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -93,11 +93,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GrassSheet_0
+      name: background_0
       rect:
         serializedVersion: 2
         x: 0
@@ -111,14 +124,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 63987e5976bfb5b459c19a57b7d48a80
-      internalID: 1409260203
+      spriteID: 8d86f8b251860bd48b1318d22185e25f
+      internalID: -1946548241
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GrassSheet_1
+      name: background_1
       rect:
         serializedVersion: 2
         x: 32
@@ -132,14 +145,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cc5cf3b77ba8261479231a94984c3d57
-      internalID: -1001650927
+      spriteID: a9a1c0b1bac6d9e40904a0677bf16f2a
+      internalID: -1498676602
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GrassSheet_2
+      name: background_2
       rect:
         serializedVersion: 2
         x: 0
@@ -153,14 +166,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a89fd54d2df307c43b1f626b9ba3b6ac
-      internalID: -850793474
+      spriteID: 44ad6462687ccc84b820580a54578d10
+      internalID: -867250936
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GrassSheet_3
+      name: background_3
       rect:
         serializedVersion: 2
         x: 32
@@ -174,8 +187,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c2c314fe20392384dade008fc201b470
-      internalID: -1557861981
+      spriteID: 977a0ee12867f73458c3adf163bdaa69
+      internalID: 520393424
       vertices: []
       indices: 
       edges: []
@@ -191,10 +204,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      GrassSheet_0: 1409260203
-      GrassSheet_1: -1001650927
-      GrassSheet_2: -850793474
-      GrassSheet_3: -1557861981
+      background_0: -1946548241
+      background_1: -1498676602
+      background_2: -867250936
+      background_3: 520393424
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

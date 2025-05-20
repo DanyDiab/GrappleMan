@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Tilemaps;
 
 public enum LeverState{
     NotActive,
@@ -15,6 +16,7 @@ public class Lever : MonoBehaviour
     SpriteRenderer spriteRenderer;
     public Sprite notActiveSprite;
     public Sprite activeSprite;
+    public Tilemap tileMapToActivate;
     // variable to keep track of when we initalliy change states to set run intial methods 
     Grapple grapple;
 
@@ -54,6 +56,7 @@ public class Lever : MonoBehaviour
                 break;
             case LeverState.On:
                 spriteRenderer.flipX = true;
+                tileMapToActivate.gameObject.SetActive(true);
                 break;
         }
     }

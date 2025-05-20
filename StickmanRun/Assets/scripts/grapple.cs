@@ -202,7 +202,9 @@ public class Grapple : MonoBehaviour{
         reverseDir = false;
         attachJoint = true;
         rb.velocity = Vector2.zero;
-        foreach(Transform child in transform){
+        // transform.position = parent.transform.position;
+        foreach (Transform child in transform)
+        {
             child.gameObject.SetActive(false);
         }
     }

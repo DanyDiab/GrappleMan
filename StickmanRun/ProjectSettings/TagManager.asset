@@ -14,6 +14,7 @@ TagManager:
   - Feet
   - Attach
   - Stick
+  - TreePlatforming
   layers:
   - Default
   - TransparentFX
