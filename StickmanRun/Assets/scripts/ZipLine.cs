@@ -47,7 +47,6 @@ public class ZipLine : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Debug.Log(currState);
         switch (currState)
         {
             case ZipLineState.To:
@@ -63,7 +62,7 @@ public class ZipLine : MonoBehaviour
     void Update()
     {
         rayCastCollide();
-        // drawLine();
+        drawLine();
     }
 
     void move(bool towards, float speed)
@@ -80,14 +79,9 @@ public class ZipLine : MonoBehaviour
     void rayCastCollide()
     {
         RaycastHit2D hit = Physics2D.Linecast(lastPos, bodyRb.position, collisionMask);
-        if (hit.collider != null)
-        {
-            Debug.Log(hit.collider.tag);
-            if (hit.collider.tag == "Grappler" && currState == ZipLineState.Idle)
-            {
-                currState = ZipLineState.To;
-            }
-            else if (hit.collider.tag == "ZipEnd" && currState == ZipLineState.To)
+        Debug.DrawLine(lastPos, bodyRb.position, Color.red, 5f);
+        if (hit.collider != null){
+            if (hit.collider.tag == "ZipEnd" && currState == ZipLineState.To)
             {
                 currState = ZipLineState.Back;
             }
@@ -107,5 +101,13 @@ public class ZipLine : MonoBehaviour
         lineRenderer.SetPosition(0, startPos);
         lineRenderer.SetPosition(1, endPos);
 
+    }
+
+
+    void OnTriggerStay2D(Collider2D collider)
+    {
+        if (collider.tag == "Grappler" && currState == ZipLineState.Idle){
+                currState = ZipLineState.To;
+        }
     }
 }
