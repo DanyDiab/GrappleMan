@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "StickmanRun.sln"
+    "dotnet.defaultSolution": "StickmanRun.sln",
+    "dotnet.preferCSharpExtension": true
 }

@@ -10,13 +10,14 @@ public class CamShake : MonoBehaviour
     float shakeDuration;
     float shakeMagnitude;
     Grapple grapple;
+    Vector3 originalPos;
 
     // Start is called before the first frame update
 
     void Start()
     {
         cam = GetComponent<Camera>();
-        shakeMagnitude = .02f;
+        shakeMagnitude = .1f;
         shakeDuration = .2f;
         grapple = FindAnyObjectByType<Grapple>();
         grapple.OnGrapple += camShake;
@@ -27,6 +28,7 @@ public class CamShake : MonoBehaviour
 
     void camShake()
     {
+        originalPos = transform.position;
         StartCoroutine(Shake());
     }
 
@@ -38,8 +40,8 @@ public class CamShake : MonoBehaviour
             
             float randX = Random.Range(-1, 1) * shakeMagnitude;
             float randY = Random.Range(-1, 1) * shakeMagnitude;
-            float camX = randX + transform.position.x;
-            float camY = randY + transform.position.y;
+            float camX = randX + originalPos.x;
+            float camY = randY + originalPos.y;
             timeElapsed += Time.deltaTime;
             transform.position = new Vector3(camX, camY, -1);
             yield return null;
