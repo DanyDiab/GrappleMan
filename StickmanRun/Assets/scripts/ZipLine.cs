@@ -73,9 +73,6 @@ public class ZipLine : MonoBehaviour
         bodyRb.MovePosition(bodyRb.position + adjustedDir);
     }
 
-
-    // 5/21/25 known bug: 
-    // if grappler is attached, other hitboxes arent triggered allowing for the zipline to continue moving passed the end 
     void rayCastCollide()
     {
         RaycastHit2D hit = Physics2D.Linecast(lastPos, bodyRb.position, collisionMask);
