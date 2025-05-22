@@ -17,6 +17,8 @@ public class move : MonoBehaviour
     bool initG;
     float ogGScale;
     float accelForce;
+    AirTime airTime;
+    float maxGScale;
 
     // increase and decrease speed with d and s?
     void Start()
@@ -25,13 +27,18 @@ public class move : MonoBehaviour
         jumpForce = 20f;
         grappler = FindFirstObjectByType<Grapple>();
         rb = GetComponent<Rigidbody2D>();
-        jumpDir = new Vector2(.2f,1);
-        accelForce = 6f;
+        jumpDir = new Vector2(.2f, 1f);
+        accelForce = 12f;
+        airTime = GetComponent<AirTime>();
+        maxGScale = 20f;
+        
     }
 
-    void FixedUpdate(){
+    void FixedUpdate()
+    {
         // if in air, preserve momentum
         preserveAir();
+        calculateAirTime();
         addAccelerationToGravity();
     }
 
@@ -54,6 +61,11 @@ public class move : MonoBehaviour
                 ogGScale = rb.gravityScale;
                 initG = true;
             }
+            if (rb.gravityScale >= maxGScale)
+            {
+                rb.gravityScale = maxGScale;
+                return;
+            }
             rb.gravityScale += accelForce * Time.deltaTime;
         }
         else{
@@ -62,27 +74,40 @@ public class move : MonoBehaviour
         }
     }
 
+    void calculateAirTime()
+    {
+        if (InAir())
+        {
+            airTime.startAir();
+            return;
+        }
+        airTime.endAir();
+    }
+
+
     
 
 
     void OnTriggerExit2D(Collider2D collider2D)
     {
 
-        if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor") && tag == "Player"){
-            onFloor = false;
-            return;
+        if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor")){
+                onFloor = false;
+                return;
+        
         }
+        
     }
-    void OnTriggerStay2D(Collider2D collider2D)
+    void OnTriggerEnter2D(Collider2D collider2D)
     {
-        if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor")  && tag == "Player"){
+        if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor")){
             onFloor = true;
             return;
         }
     }
 
     bool InAir(){
-        return !onFloor && grappler.getState() != grapplerState.PullingPlayer && grappler.getState() != grapplerState.PullingObject;
+        return !onFloor && !grappler.isActive();
     }
 
 

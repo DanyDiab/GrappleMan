@@ -26,7 +26,7 @@ public class CamShake : MonoBehaviour
     }
     // Update is called once per frame
 
-    void camShake()
+    public void camShake()
     {
         originalPos = transform.position;
         StartCoroutine(Shake());
