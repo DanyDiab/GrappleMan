@@ -51,10 +51,12 @@ public class Grapple : MonoBehaviour
     public LayerMask collisionMask;
     public event OnGrappleAttach OnGrapple;
     Rigidbody2D attachedRigidBody;
+    Rigidbody2D parentRb;
 
 
     protected void Start()
     {
+        parentRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
         currState = grapplerState.Idle;
         speedBoost = 350;
         length = 20;
@@ -66,6 +68,8 @@ public class Grapple : MonoBehaviour
         attachJoint = true;
         swingSpeed = 10;
         lastPos = transform.position;
+        // Debug.Log(parentRb);
+
     }
 
 
@@ -84,7 +88,7 @@ public class Grapple : MonoBehaviour
         ePressed = Input.GetKey(KeyCode.E);
         leftClick = Input.GetMouseButton(0);
         rightClick = Input.GetMouseButton(1);
-        distance = Vector2.Distance(transform.parent.position, transform.position);
+        distance = Vector2.Distance(parentRb.position, transform.position);
         // Debug.Log(currState);
         switch (currState)
         {
@@ -172,7 +176,7 @@ public class Grapple : MonoBehaviour
             child.gameObject.SetActive(true);
         }
         // Vector3 startPos = new Vector3(transform.parent.position.x,transform.position.y + 2,1);
-        Vector3 startPos = transform.parent.position;
+        Vector3 startPos = parentRb.position;
         transform.position = startPos;
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = 1;
@@ -191,7 +195,7 @@ public class Grapple : MonoBehaviour
     {
         if (!forward)
         {
-            dir = (transform.parent.position - transform.position).normalized;
+            dir = (parentRb.position - rb.position).normalized;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             if (!reverseDir)
             {
@@ -200,13 +204,14 @@ public class Grapple : MonoBehaviour
             }
         }
         rb.velocity = dir * grappleSpeed;
-        distance = Vector2.Distance(transform.position, transform.parent.position);
+        distance = Vector2.Distance(rb.position, parentRb.position);
         // Debug.Log(distance);
     }
 
     public void resetStates()
     {
         // set state to idle/default
+        transform.parent = parentRb.transform;
         pullObject = null;
         distance = 0;
         reverseDir = false;
@@ -223,14 +228,13 @@ public class Grapple : MonoBehaviour
 
     void calculateMoveDirection()
     {
-        moveDir = transform.position - transform.parent.position;
+        moveDir = rb.position - parentRb.position;
         moveDir.Normalize();
     }
 
     protected void applyMove()
     {
-        Rigidbody2D playerRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
-        playerRb.AddForce(speedBoost * moveDir, ForceMode2D.Force);
+        parentRb.AddForce(speedBoost * moveDir, ForceMode2D.Force);
     }
 
 
@@ -238,7 +242,7 @@ public class Grapple : MonoBehaviour
     {
         if (lineRenderer == null) return;
         lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, transform.parent.position);
+        lineRenderer.SetPosition(0, parentRb.position);
         lineRenderer.SetPosition(1, transform.position);
     }
 
@@ -249,13 +253,16 @@ public class Grapple : MonoBehaviour
         {
             if (attachedRigidBody != null && attachedRigidBody.bodyType != RigidbodyType2D.Static)
             {
+
                 rb.constraints = RigidbodyConstraints2D.None;
                 rb.position = attachedRigidBody.position;
                 return;
             }
-            rb.constraints = RigidbodyConstraints2D.FreezePosition;
+            rb.bodyType = RigidbodyType2D.Static;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
             return;
         }
+        rb.bodyType = RigidbodyType2D.Dynamic;
         rb.constraints = RigidbodyConstraints2D.None;
     }
     void retractGrappler()
@@ -281,14 +288,13 @@ public class Grapple : MonoBehaviour
 
     void grapplerAttach(Collider2D collider)
     {
+        parentRb = transform.parent.GetComponent<Rigidbody2D>();
+        transform.parent = null;
         OnGrapple?.Invoke();
-        keepHeadInPlace(true);
-        // GetComponent<BoxCollider2D>().enabled = false;
         currState = grapplerState.Attached;
         attachedRigidBody = collider.attachedRigidbody;
         currSpeed = speedBoost;
         stuckPos = transform.position;
-        // Debug.Log(collider.gameObject.layer == LayerMask.NameToLayer("Pullables"));
         if (collider.gameObject.layer == LayerMask.NameToLayer("Pullables"))
         {
             pullObject = collider.GetComponentInParent<Pullable>();

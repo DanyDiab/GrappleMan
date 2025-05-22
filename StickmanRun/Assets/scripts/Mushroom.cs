@@ -24,6 +24,7 @@ public class Mushroom : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
+        if (other.tag == "Grappler") return;
         jumpedRb = other.attachedRigidbody;
         airTime = other.GetComponentInParent<AirTime>();
         Debug.Log(airTime);

@@ -7,23 +7,23 @@ public class Pullable : MonoBehaviour
     bool isPulled;
     public bool isStuck;
     Rigidbody2D rb;
-    float gScale;
     // Start is called before the first frame update
 
 
-    void Start(){
-        gScale = 2;
+    void Start()
+    {
         rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 2;
+        
     }
     void LateUpdate(){
         if (isStuck){
             if (isPulled){
+                rb.constraints = RigidbodyConstraints2D.None;
                 isStuck = false;
-                rb.gravityScale = gScale;
                 return;
             }
-            rb.gravityScale = 0f;
-            rb.velocity = Vector2.zero;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
             return;
         }   
     }
