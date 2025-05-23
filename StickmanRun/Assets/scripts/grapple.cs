@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public enum grapplerState {
@@ -17,43 +18,47 @@ public enum grapplerState {
 
 public class Grapple : MonoBehaviour
 {
+    
+    // state
+    grapplerState currState;
 
-    // how far the grappler can reach
-    float length;
+    // vectors
     Vector2 dir;
-    Vector2 attachPos;
+    Vector2 moveDir;
+    Vector2 lastPos;
+
+
+// float
     float grappleSpeed;
+    float length;
+
+    public float speedBoost;
 
     float distance;
 
-    protected LineRenderer lineRenderer;
-    public float speedBoost;
-    float currSpeed;
-    protected Rigidbody2D rb;
-    Vector2 moveDir;
-    bool addMove;
-    float totalGrapplerDisplacement;
-    protected int state; // current state of the grappler
-    static bool didDrawLine;
+// inputs
     bool leftClick;
-    bool rightClick;
-    bool ePressed;
-    grapplerState currState;
+    bool aPressed;
+    bool dPressed;
     bool reverseDir;
-    Pullable pullObject;
 
-    bool attachJoint;
-    float swingSpeed;
-    HingeJoint2D hinge;
-    GameObject parent;
-    Vector3 stuckPos;
-    Vector2 lastPos;
-    public LayerMask collisionMask;
-    public event OnGrappleAttach OnGrapple;
+    // rigidbodies
+    Rigidbody2D rb;
     Rigidbody2D attachedRigidBody;
     Rigidbody2D parentRb;
+
+
+// collisions
+    Pullable pullObject;
+    public LayerMask collisionMask;
+
+
+// drawing line stuff
     GrappleHandPosition grappleHandPosition;
-    
+    LineRenderer lineRenderer;
+
+
+    public event OnGrappleAttach OnGrapple;
 
 
     protected void Start()
@@ -61,43 +66,27 @@ public class Grapple : MonoBehaviour
         parentRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
         grappleHandPosition = transform.parent.gameObject.GetComponent<GrappleHandPosition>();
         currState = grapplerState.Idle;
-        speedBoost = 350;
         length = 20;
         grappleSpeed = 25;
         lineRenderer = GetComponentInChildren<LineRenderer>();
         rb = GetComponent<Rigidbody2D>();
-        resetStates();
         reverseDir = false;
-        attachJoint = true;
-        swingSpeed = 10;
         lastPos = transform.position;
-        // Debug.Log(parentRb);
+        speedBoost = 350;
 
     }
 
-
-    // e = cast grappler.
-    // holding left click = pull player in 
-    // holding right click push player out  or pull object towards player
-    // holding both = no push or pull allwing player to swing\
-
-
-
-    // add force to move player to emulat emoving faster after a longer time
-    // 
-
     void FixedUpdate()
     {
-        ePressed = Input.GetKey(KeyCode.E);
+        aPressed = Input.GetKey(KeyCode.A);
+        dPressed = Input.GetKey(KeyCode.D);
         leftClick = Input.GetMouseButton(0);
-        rightClick = Input.GetMouseButton(1);
         distance = Vector2.Distance(parentRb.position, transform.position);
-        // Debug.Log(currState);
         switch (currState)
         {
             case grapplerState.Idle:
                 resetStates();
-                if (ePressed)
+                if (leftClick)
                 {
                     cast();
                     currState = grapplerState.Casting;
@@ -107,16 +96,9 @@ public class Grapple : MonoBehaviour
                 moveGrappler(true);
                 break;
             case grapplerState.Attached:
+                determinePullOrPush();
                 keepHeadInPlace(true);
                 if (leftClick)
-                {
-                    currState = grapplerState.PullingPlayer;
-                }
-                else if (rightClick)
-                {
-                    currState = grapplerState.PullingObject;
-                }
-                else if (ePressed)
                 {
                     currState = grapplerState.Retracting;
                 }
@@ -130,8 +112,8 @@ public class Grapple : MonoBehaviour
                 }
                 break;
             case grapplerState.PullingPlayer:
+                determinePullOrPush();
                 keepHeadInPlace(true);
-                if (!leftClick) currState = grapplerState.Attached;
                 calculateMoveDirection();
                 applyMove();
                 break;
@@ -146,8 +128,8 @@ public class Grapple : MonoBehaviour
                     retractGrappler();
                     break;
                 }
-
-                if (!rightClick) currState = grapplerState.Attached;
+                // if not pulling object input
+                determinePullOrPush();
                 calculateMoveDirection();
                 moveDir *= -1;
                 applyMove();
@@ -170,6 +152,45 @@ public class Grapple : MonoBehaviour
     void LateUpdate()
     {
         drawLine();
+    }
+
+
+    void determinePullOrPush()
+    {
+        if (leftClick)
+        {
+            currState = grapplerState.Retracting;
+            return;
+        }
+        if (parentRb.position.x - rb.position.x > 0)
+        {
+            if (aPressed)
+            {
+                currState = grapplerState.PullingPlayer;
+                return;
+            }
+
+            else if (dPressed)
+            {
+                currState = grapplerState.PullingObject;
+                return;
+            }
+            currState = grapplerState.Attached;
+            return;
+        }
+        if (aPressed)
+        {
+            currState = grapplerState.PullingObject;
+            return;
+        }
+        else if (dPressed)
+        {
+            currState = grapplerState.PullingPlayer;
+            return;
+        }
+        currState = grapplerState.Attached;
+        return;   
+    
     }
 
     public void cast()
@@ -217,8 +238,6 @@ public class Grapple : MonoBehaviour
         transform.parent = parentRb.transform;
         pullObject = null;
         distance = 0;
-        reverseDir = false;
-        attachJoint = true;
         rb.velocity = Vector2.zero;
         lastPos = transform.position;
         attachedRigidBody = null;
@@ -298,8 +317,6 @@ public class Grapple : MonoBehaviour
         OnGrapple?.Invoke();
         currState = grapplerState.Attached;
         attachedRigidBody = collider.attachedRigidbody;
-        currSpeed = speedBoost;
-        stuckPos = transform.position;
         if (collider.gameObject.layer == LayerMask.NameToLayer("Pullables"))
         {
             pullObject = collider.GetComponentInParent<Pullable>();
@@ -308,13 +325,6 @@ public class Grapple : MonoBehaviour
     }
 
     public delegate void OnGrappleAttach();
-
-    // void OnTriggerStay2D(Collider2D collider){
-    //     // Debug.Log(collider.tag);
-    //     if(collider.tag == "Player"){
-
-    //     }
-    // }
 
     public Vector2 getDir()
     {

@@ -27,7 +27,6 @@ public class Mushroom : MonoBehaviour
         if (other.tag == "Grappler") return;
         jumpedRb = other.attachedRigidbody;
         airTime = other.GetComponentInParent<AirTime>();
-        Debug.Log(airTime);
         if (jumpedRb != null && airTime != null)
         {
             camShake.camShake();
