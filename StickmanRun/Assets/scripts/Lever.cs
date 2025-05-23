@@ -24,7 +24,6 @@ public class Lever : MonoBehaviour
     {
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         currState = LeverState.NotActive;
-        grapple = FindAnyObjectByType<Grapple>();
     }
 
 
@@ -39,9 +38,6 @@ public class Lever : MonoBehaviour
             // 
             case LeverState.Off:
                 spriteRenderer.sprite = activeSprite;
-                Debug.Log(grapple);
-                // Debug.Log(grapple.getState());
-
                 if (grapple != null && grapple.getState() == grapplerState.PullingObject)
                 {
                     grapple.resetStates();
@@ -82,7 +78,7 @@ public class Lever : MonoBehaviour
     {
         if (collision.tag == "Grappler")
         {
-            grapple = collision.GetComponentInChildren<Grapple>();
+            grapple = collision.GetComponentInParent<Grapple>();
         }
     }
 

@@ -34,7 +34,6 @@ public class Mushroom : MonoBehaviour
             airTime.endAir();
             maxAirTime = airTime.getAirTime();
             addForces = true;
-            Debug.Log("max air: " + maxAirTime);
         }
     }
 
@@ -63,7 +62,6 @@ public class Mushroom : MonoBehaviour
             v = jumpBoost * jumpedRb.gravityScale;
         }
         // v += currYVelocity;
-        Debug.Log("adding this force now! " + v);
         jumpedRb.AddForce(Vector2.up * v, ForceMode2D.Impulse);
         if (timeInAir > maxAirTime)
         {

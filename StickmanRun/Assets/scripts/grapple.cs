@@ -52,11 +52,14 @@ public class Grapple : MonoBehaviour
     public event OnGrappleAttach OnGrapple;
     Rigidbody2D attachedRigidBody;
     Rigidbody2D parentRb;
+    GrappleHandPosition grappleHandPosition;
+    
 
 
     protected void Start()
     {
         parentRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
+        grappleHandPosition = transform.parent.gameObject.GetComponent<GrappleHandPosition>();
         currState = grapplerState.Idle;
         speedBoost = 350;
         length = 20;
@@ -242,8 +245,9 @@ public class Grapple : MonoBehaviour
     {
         if (lineRenderer == null) return;
         lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, parentRb.position);
+        lineRenderer.SetPosition(0, grappleHandPosition.getCurrPosition().position);
         lineRenderer.SetPosition(1, transform.position);
+        lineRenderer.sortingOrder = grappleHandPosition.getDrawingLayer();
     }
 
 
@@ -289,6 +293,7 @@ public class Grapple : MonoBehaviour
     void grapplerAttach(Collider2D collider)
     {
         parentRb = transform.parent.GetComponent<Rigidbody2D>();
+        grappleHandPosition = transform.parent.GetComponent<GrappleHandPosition>();
         transform.parent = null;
         OnGrapple?.Invoke();
         currState = grapplerState.Attached;
@@ -322,6 +327,11 @@ public class Grapple : MonoBehaviour
 
     public bool isActive()
     {
-        return currState ==  grapplerState.PullingObject || currState == grapplerState.PullingPlayer;
+        return currState == grapplerState.PullingObject || currState == grapplerState.PullingPlayer;
+    }
+    
+        public bool isDeployed()
+    {
+        return currState !=  grapplerState.Idle && currState !=  grapplerState.Retracting;
     }
 }
