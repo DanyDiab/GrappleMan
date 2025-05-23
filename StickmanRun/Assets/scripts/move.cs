@@ -7,9 +7,10 @@ using UnityEngine;
 public class move : MonoBehaviour
 {
 
+    Player player;
+
     public float jumpForce; 
     private bool onFloor;
-    private Grapple grappler;
     Rigidbody2D rb;
     float airX;
     public int jumpFrames;
@@ -23,9 +24,9 @@ public class move : MonoBehaviour
     // increase and decrease speed with d and s?
     void Start()
     {
+        player = GetComponent<Player>();
         jumpFrames = 2;
         jumpForce = 20f;
-        grappler = FindFirstObjectByType<Grapple>();
         rb = GetComponent<Rigidbody2D>();
         jumpDir = new Vector2(.2f, 1f);
         accelForce = 12f;
@@ -45,7 +46,7 @@ public class move : MonoBehaviour
 
 
     void preserveAir(){
-        if(InAir() && rb.velocity.x != 0){
+        if(player.InAir() && rb.velocity.x != 0){
             if(airX == 0){
                 airX = rb.velocity.x;
             }
@@ -56,7 +57,7 @@ public class move : MonoBehaviour
     }
 
     void addAccelerationToGravity(){
-        if(InAir()){
+        if(player.InAir()){
             if(!initG){
                 ogGScale = rb.gravityScale;
                 initG = true;
@@ -76,7 +77,7 @@ public class move : MonoBehaviour
 
     void calculateAirTime()
     {
-        if (InAir())
+        if (player.InAir())
         {
             airTime.startAir();
             return;
@@ -88,27 +89,7 @@ public class move : MonoBehaviour
     
 
 
-    void OnTriggerExit2D(Collider2D collider2D)
-    {
 
-        if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor")){
-                onFloor = false;
-                return;
-        
-        }
-        
-    }
-    void OnTriggerEnter2D(Collider2D collider2D)
-    {
-        if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor")){
-            onFloor = true;
-            return;
-        }
-    }
-
-    bool InAir(){
-        return !onFloor && !grappler.isActive();
-    }
 
 
 }

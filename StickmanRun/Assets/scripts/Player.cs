@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+
+    bool sliding;
+    bool onFloor;
+    Grapple grappler;
+
+
     Rigidbody2D rb;
     public Sprite left;
     public Sprite right;
@@ -13,11 +19,12 @@ public class Player : MonoBehaviour
     public SpriteRenderer hand;
     Sprite currSprite;
     Grapple grapple;
-    
+
 
 
     void Start()
     {
+        grappler = FindFirstObjectByType<Grapple>();
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -75,6 +82,46 @@ public class Player : MonoBehaviour
         {
             hand.transform.position = grappleHandPosition.handStartNormal.position;
         }
+    }
+
+    void OnTriggerExit2D(Collider2D collider2D)
+    {
+
+        if (collider2D.gameObject.layer == LayerMask.NameToLayer("Floor"))
+        {
+            onFloor = false;
+            return;
+
+        }
+
+    }
+    void OnTriggerEnter2D(Collider2D collider2D)
+    {
+        if (collider2D.gameObject.layer == LayerMask.NameToLayer("Floor"))
+        {
+            onFloor = true;
+            return;
+        }
+    }
+
+    public bool InAir()
+    {
+        return !onFloor && !grappler.isActive() || sliding;
+    }
+
+
+    public void setSliding(bool sliding)
+    {
+        this.sliding = sliding;
+    }
+    public bool getOnFloor()
+    {
+        return onFloor;
+    }
+
+    public bool isSliding()
+    {
+        return sliding;
     }
 
 
