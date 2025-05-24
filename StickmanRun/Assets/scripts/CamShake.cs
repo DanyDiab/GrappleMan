@@ -28,7 +28,6 @@ public class CamShake : MonoBehaviour
 
     public void camShake()
     {
-        originalPos = transform.position;
         StartCoroutine(Shake());
     }
 

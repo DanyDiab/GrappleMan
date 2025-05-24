@@ -45,6 +45,7 @@ public class move : MonoBehaviour
 
 
 
+// add a linear decary to airX
     void preserveAir(){
         if(player.InAir() && rb.velocity.x != 0){
             if(airX == 0){
