@@ -36,7 +36,7 @@ public class ObjectShake : MonoBehaviour {
             float newX = randX + originalPos.x;
             float newY = randY + originalPos.y;
             timeElapsed += Time.deltaTime;
-            spriteRenderer.transform.position = new Vector3(newX, newY, -1);
+            spriteRenderer.transform.position = new Vector3(newX, newY, 0);
             yield return null;
         }
 

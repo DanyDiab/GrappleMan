@@ -11,12 +11,13 @@ public class Mushroom : MonoBehaviour
     bool addForces;
     float timeInAir;
     float maxAirTime;
-    CamShake camShake;
+    ObjectShake objectShake;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        camShake = Camera.main.GetComponent<CamShake>();
+        objectShake = GetComponent<ObjectShake>();   
         jumpBoost = 3f;
     }
 
@@ -29,7 +30,7 @@ public class Mushroom : MonoBehaviour
         airTime = other.GetComponentInParent<AirTime>();
         if (jumpedRb != null && airTime != null)
         {
-            camShake.camShake();
+            objectShake.objectShake();
             airTime.endAir();
             maxAirTime = airTime.getAirTime();
             addForces = true;

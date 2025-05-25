@@ -20,6 +20,7 @@ public class move : MonoBehaviour
     float accelForce;
     AirTime airTime;
     float maxGScale;
+    float linearDecay;
 
     // increase and decrease speed with d and s?
     void Start()
@@ -32,6 +33,7 @@ public class move : MonoBehaviour
         accelForce = 12f;
         airTime = GetComponent<AirTime>();
         maxGScale = 20f;
+        linearDecay = .3f;
         
     }
 
@@ -51,6 +53,8 @@ public class move : MonoBehaviour
             if(airX == 0){
                 airX = rb.velocity.x;
             }
+            if(airX > 0) airX -= linearDecay;
+            else if(airX < 0) airX += linearDecay;
             rb.velocity = new Vector2(airX, rb.velocity.y);
             return;
         }
@@ -85,12 +89,4 @@ public class move : MonoBehaviour
         }
         airTime.endAir();
     }
-
-
-    
-
-
-
-
-
 }
