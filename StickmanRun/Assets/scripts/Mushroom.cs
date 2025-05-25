@@ -49,11 +49,8 @@ public class Mushroom : MonoBehaviour
     void jump()
     {
         timeInAir += Time.deltaTime;
-
-
         // if y velocity is negative make it positive
         //
-
         float t = timeInAir / maxAirTime;
         float forceScale = Mathf.Clamp01(1 - t);
         float v = jumpBoost * forceScale * jumpedRb.gravityScale;
