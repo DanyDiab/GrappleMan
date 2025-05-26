@@ -12,13 +12,16 @@ public class Mushroom : MonoBehaviour
     float timeInAir;
     float maxAirTime;
     ObjectShake objectShake;
+    float maxForce;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        objectShake = GetComponent<ObjectShake>();   
-        jumpBoost = 3f;
+        objectShake = GetComponent<ObjectShake>();
+        jumpBoost = 50f;
+        maxForce = 25f;
+        
     }
 
     // Update is called once per frame
@@ -30,10 +33,14 @@ public class Mushroom : MonoBehaviour
         airTime = other.GetComponentInParent<AirTime>();
         if (jumpedRb != null && airTime != null)
         {
+            // jumpedRb.gravityScale = jumpedRb.gravityScale / 2;
             objectShake.objectShake();
             airTime.endAir();
             maxAirTime = airTime.getAirTime();
             addForces = true;
+            jumpedRb.AddForce(Vector2.up * jumpBoost, ForceMode2D.Impulse);
+            // jumpedRb.gravityScale = jumpedRb.gravityScale * 2;
+
         }
     }
 
@@ -51,15 +58,15 @@ public class Mushroom : MonoBehaviour
         timeInAir += Time.deltaTime;
         // if y velocity is negative make it positive
         //
-        float t = timeInAir / maxAirTime;
-        float forceScale = Mathf.Clamp01(1 - t);
-        float v = jumpBoost * forceScale * jumpedRb.gravityScale;
-        if (maxAirTime < .1f)
-        {
-            v = jumpBoost * jumpedRb.gravityScale;
-        }
+        // float t = timeInAir / maxAirTime;
+        // float forceScale = Mathf.Clamp01(1 - t);
+        // float v = jumpBoost * forceScale * jumpedRb.gravityScale;
+        // if (maxAirTime < .1f)
+        // {
+            // v = jumpBoost * jumpedRb.gravityScale;
+        // }
+        // if (v > maxForce) v = maxForce;
         // v += currYVelocity;
-        jumpedRb.AddForce(Vector2.up * v, ForceMode2D.Impulse);
         if (timeInAir > maxAirTime)
         {
             addForces = false;

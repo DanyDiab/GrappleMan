@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,7 @@ public class Player : MonoBehaviour
     public SpriteRenderer hand;
     Sprite currSprite;
     Grapple grapple;
+    float movingTolerance;
 
 
 
@@ -29,6 +31,7 @@ public class Player : MonoBehaviour
         rb.freezeRotation = true;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         grapple = GetComponentInChildren<Grapple>();
+        movingTolerance = .1f;
     }
     void Update()
     {
@@ -51,17 +54,18 @@ public class Player : MonoBehaviour
             }
             return;
         }
+        if (Math.Abs(0 - rb.velocity.x) <= movingTolerance)
+        {
+            currSprite = normal;
+            return;
+        }
         if (rb.velocity.x < 0)
         {
             currSprite = left;
         }
-        else if (rb.velocity.x > 0)
-        {
-            currSprite = right;
-        }
         else
         {
-            currSprite = normal;
+            currSprite = right;
         }
     }
 

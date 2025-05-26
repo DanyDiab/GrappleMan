@@ -1,3 +1,3 @@
 {
-    "dotnet.preferCSharpExtension": false
+    "dotnet.preferCSharpExtension": true
 }

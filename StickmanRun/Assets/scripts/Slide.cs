@@ -15,6 +15,8 @@ public class Slide : MonoBehaviour
     float dragWhileSlide;
     float ogDrag;
     bool startedSlide;
+    public LayerMask floorLayer;
+    float slopeC;
 
 
     void Start()
@@ -24,6 +26,7 @@ public class Slide : MonoBehaviour
         player = GetComponent<Player>();
         rb = player.GetComponent<Rigidbody2D>();
         ogDrag = rb.drag;
+        slopeC = 5f;
     }
     void Update()
     {
@@ -45,6 +48,7 @@ public class Slide : MonoBehaviour
                 rb.drag = dragWhileSlide;
                 startedSlide = true;
             }
+            addSlopeAccel();
             player.setSliding(true);
             return;
         }
@@ -53,11 +57,32 @@ public class Slide : MonoBehaviour
         startedSlide = false;
     }
 
-    void preventUpwardsVelocity(){
-        
+    void preventUpwardsVelocity()
+    {
+
         if (rb.velocity.y > 0)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0);
         }
+    }
+
+
+// WIP 5/26/25
+    void addSlopeAccel()
+    {
+
+        RaycastHit2D hit = Physics2D.Raycast(rb.position, Vector2.down, 6f, floorLayer);
+        if (hit)
+        {
+            Vector2 slope = hit.normal;
+            Vector2 perp = Vector2.Perpendicular(slope) * -1;
+            float angle = Vector2.Angle(Vector2.down, slope);
+            float adjustedAngle = 180 - angle;
+            float speed = adjustedAngle * slopeC;
+            rb.AddForce(perp * speed, ForceMode2D.Force);
+            
+        }
+        // gravity * sin(angle) 
+        // find the angle by casting a ray downwards
     }
 }

@@ -53,8 +53,10 @@ public class move : MonoBehaviour
             if(airX == 0){
                 airX = rb.velocity.x;
             }
-            if(airX > 0) airX -= linearDecay;
-            else if(airX < 0) airX += linearDecay;
+            if (player.isSliding()){
+                if(airX > 0) airX -= linearDecay;
+                else if(airX < 0) airX += linearDecay;
+            }
             rb.velocity = new Vector2(airX, rb.velocity.y);
             return;
         }
