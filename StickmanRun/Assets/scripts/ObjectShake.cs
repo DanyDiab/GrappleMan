@@ -30,7 +30,6 @@ public class ObjectShake : MonoBehaviour {
         float timeElapsed = 0f;
         while (timeElapsed < shakeDuration)
         {
-
             float randX = Random.Range(-1, 1) * shakeMagnitude;
             float randY = Random.Range(-1, 1) * shakeMagnitude;
             float newX = randX + originalPos.x;
