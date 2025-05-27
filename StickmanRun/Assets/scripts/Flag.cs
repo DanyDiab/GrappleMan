@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public enum FlagState
@@ -14,9 +17,10 @@ public enum FlagState
 public class Flag : MonoBehaviour
 {
 
+    static Flag currentFlag;
+
     Vector3 originalPos;
     bool deployed;
-    static Vector3 checkpoint;
     static int flagCount;
     FlagState currState;
     ParticleSystem floatingParticles;
@@ -28,6 +32,8 @@ public class Flag : MonoBehaviour
     Player player;
     bool interacted;
     SpriteRenderer spriteRenderer;
+    public Image image;
+    public TextMeshProUGUI text;
 
     void Start()
     {
@@ -49,17 +55,23 @@ public class Flag : MonoBehaviour
         {
             case FlagState.AwaitingPickup:
                 floatingSprite();
-                break;
+                return;
             case FlagState.InInventory:
+                drawUI("Place Flag?");
                 rb.bodyType = RigidbodyType2D.Static;
+                if (player.getIsMoving()) return;
+
                 checkForInput();
                 if (interacted)
                 {
                     interacted = false;
                     deploy();
                 }
-                break;
+                return;
             case FlagState.Deployed:
+                drawUI("Teleport To Flag?");
+                if (player.getIsMoving()) return;
+
                 checkForInput();
                 if (interacted)
                 {
@@ -67,7 +79,7 @@ public class Flag : MonoBehaviour
                     teleportPlayer();
                 }
 
-                break;
+                return;
         }
     }
 
@@ -86,11 +98,19 @@ public class Flag : MonoBehaviour
         {
             pressedTime += Time.deltaTime;
         }
+        else
+        {
+            pressedTime = 0;
+        }
+
         if (pressedTime >= confirmedTime)
         {
             pressedTime = 0;
             interacted = true;
+            return;
         }
+        
+
     }
 
     void deploy()
@@ -102,14 +122,23 @@ public class Flag : MonoBehaviour
 
     void teleportPlayer()
     {
-        player.transform.position = transform.position;
+        player.transform.position = currentFlag.transform.position;
+    }
+
+    void drawUI(string textToDisplay)
+    {
+        float percentFill = Mathf.Clamp(pressedTime / confirmedTime, 0, 1);
+        image.fillAmount = percentFill;
+        text.alpha = percentFill;
+        text.text = textToDisplay;
     }
 
 
     void OnTriggerStay2D(Collider2D collider)
     {
-        if (collider.tag == "Grappler" && currState == FlagState.AwaitingPickup)
+        if (collider.tag == "Grappler" && currState != FlagState.InInventory)
         {
+            currentFlag = this;
             currState = FlagState.InInventory;
             floatingParticles.Stop();
             foreach (Transform child in transform)

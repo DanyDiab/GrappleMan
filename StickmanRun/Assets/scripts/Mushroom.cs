@@ -38,10 +38,23 @@ public class Mushroom : MonoBehaviour
             airTime.endAir();
             maxAirTime = airTime.getAirTime();
             addForces = true;
-            jumpedRb.AddForce(Vector2.up * jumpBoost, ForceMode2D.Impulse);
+            Vector2 launchVector = calculateDirToJump();
+            jumpedRb.AddForce(launchVector * jumpBoost, ForceMode2D.Impulse);
             // jumpedRb.gravityScale = jumpedRb.gravityScale * 2;
 
         }
+    }
+
+    Vector2 calculateDirToJump()
+    {
+        float angle = transform.rotation.z;
+        float xUp = Mathf.Cos(angle);
+        float yUp = Mathf.Sin(angle);
+
+        float perpX = -yUp;
+        float perpY = xUp;
+        Vector2 perp = new Vector2(perpX, perpY);
+        return perp;
     }
 
     void FixedUpdate()

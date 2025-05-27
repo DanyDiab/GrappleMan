@@ -30,6 +30,7 @@ public class Grapple : MonoBehaviour
 
 // float
     float grappleSpeed;
+    float returnSpeed;
     float length;
 
     public float speedBoost;
@@ -68,6 +69,7 @@ public class Grapple : MonoBehaviour
         currState = grapplerState.Idle;
         length = 20;
         grappleSpeed = 25;
+        returnSpeed = 40;
         lineRenderer = GetComponentInChildren<LineRenderer>();
         rb = GetComponent<Rigidbody2D>();
         reverseDir = false;
@@ -93,7 +95,7 @@ public class Grapple : MonoBehaviour
                 }
                 break;
             case grapplerState.Casting:
-                moveGrappler(true);
+                moveGrappler(true, grappleSpeed);
                 break;
             case grapplerState.Attached:
                 determinePullOrPush();
@@ -215,10 +217,11 @@ public class Grapple : MonoBehaviour
     }
 
 
-    protected void moveGrappler(bool forward)
+    protected void moveGrappler(bool forward, float speed)
     {
         if (!forward)
         {
+            
             dir = (parentRb.position - rb.position).normalized;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             if (!reverseDir)
@@ -227,7 +230,7 @@ public class Grapple : MonoBehaviour
                 reverseDir = true;
             }
         }
-        rb.velocity = dir * grappleSpeed;
+        rb.velocity = dir * speed;
         distance = Vector2.Distance(rb.position, parentRb.position);
         // Debug.Log(distance);
     }
@@ -291,7 +294,7 @@ public class Grapple : MonoBehaviour
     void retractGrappler()
     {
         keepHeadInPlace(false);
-        moveGrappler(false);
+        moveGrappler(false, returnSpeed);
         if (distance <= 0.5f)
         {
             currState = grapplerState.Idle;

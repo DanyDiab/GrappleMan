@@ -158,6 +158,10 @@ public class Player : MonoBehaviour
     {
         return sliding;
     }
+    public bool getIsMoving()
+    {
+        return isMoving;
+    }
 
 
 }
