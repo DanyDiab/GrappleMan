@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     Sprite currSprite;
     Grapple grapple;
     float movingTolerance;
+    public ParticleSystem slidingParticles;
 
 
 
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
     {
         switchPlayerSprite();
         drawHand();
+        enableSlidingParticles();
         spriteRenderer.sprite = currSprite;
     }
 
@@ -67,6 +69,24 @@ public class Player : MonoBehaviour
         {
             currSprite = right;
         }
+    }
+
+    void enableSlidingParticles()
+    {
+        if (isSliding())
+        {
+            slidingParticles.gameObject.SetActive(true);
+            if (currSprite == left)
+            {
+                slidingParticles.shape.rotation.Set(0, 0, 90f);
+            }
+            else
+            {
+                slidingParticles.shape.rotation.Set(0, 0, 0);
+            }
+            return;
+        }
+        slidingParticles.gameObject.SetActive(false);
     }
 
 
