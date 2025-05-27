@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     Grapple grapple;
     float movingTolerance;
     public ParticleSystem slidingParticles;
+    bool isMoving;
 
 
 
@@ -36,6 +37,7 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        determineIfIsMoving();
         switchPlayerSprite();
         drawHand();
         enableSlidingParticles();
@@ -56,7 +58,7 @@ public class Player : MonoBehaviour
             }
             return;
         }
-        if (Math.Abs(0 - rb.velocity.x) <= movingTolerance)
+        if (!isMoving)
         {
             currSprite = normal;
             return;
@@ -73,20 +75,23 @@ public class Player : MonoBehaviour
 
     void enableSlidingParticles()
     {
-        if (isSliding())
+        if (isSliding() && isMoving)
         {
-            slidingParticles.gameObject.SetActive(true);
+            slidingParticles.Play();
             if (currSprite == left)
             {
-                slidingParticles.shape.rotation.Set(0, 0, 90f);
+                slidingParticles.transform.localPosition = Vector3.zero;
+                slidingParticles.transform.rotation = Quaternion.Euler(0, 0, 0);
+
             }
             else
             {
-                slidingParticles.shape.rotation.Set(0, 0, 0);
+                slidingParticles.transform.localPosition = new Vector3(-2f, -2f, 0);
+                slidingParticles.transform.rotation = Quaternion.Euler(0, 0, 90);
             }
             return;
         }
-        slidingParticles.gameObject.SetActive(false);
+        slidingParticles.Stop();
     }
 
 
@@ -106,6 +111,12 @@ public class Player : MonoBehaviour
         {
             hand.transform.position = grappleHandPosition.handStartNormal.position;
         }
+    }
+
+    void determineIfIsMoving()
+    {
+        isMoving = Math.Abs(0 - rb.velocity.x) >= movingTolerance;
+
     }
 
     void OnTriggerExit2D(Collider2D collider2D)
