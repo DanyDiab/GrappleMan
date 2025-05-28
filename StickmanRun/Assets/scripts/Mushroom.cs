@@ -47,13 +47,11 @@ public class Mushroom : MonoBehaviour
 
     Vector2 calculateDirToJump()
     {
-        float angle = transform.rotation.z;
+        float angle = transform.rotation.z - 180;
         float xUp = Mathf.Cos(angle);
         float yUp = Mathf.Sin(angle);
 
-        float perpX = -yUp;
-        float perpY = xUp;
-        Vector2 perp = new Vector2(perpX, perpY);
+        Vector2 perp = new Vector2(xUp, yUp);
         return perp;
     }
 

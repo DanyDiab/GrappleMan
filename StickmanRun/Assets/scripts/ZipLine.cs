@@ -12,8 +12,8 @@ public enum ZipLineState
 public class ZipLine : MonoBehaviour
 {
 
-    float toSpeed;
-    float backSpeed;
+    public float toSpeed;
+    public float backSpeed;
     public Transform startTrans;
     public Transform endTrans;
     Vector3 startPos;
@@ -38,8 +38,6 @@ public class ZipLine : MonoBehaviour
         // rb = GetComponent<Rigidbody2D>();
         // bodyRb = Get<Rigidbody2D>();
         bodyRb.transform.parent = null;
-        toSpeed = 15f;
-        backSpeed = 5f;
         lastPos = bodyRb.position;
         lineRenderer = GetComponentInChildren<LineRenderer>();
     }
