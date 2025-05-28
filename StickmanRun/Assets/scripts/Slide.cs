@@ -48,7 +48,7 @@ public class Slide : MonoBehaviour
                 rb.drag = dragWhileSlide;
                 startedSlide = true;
             }
-            addSlopeAccel();
+            // addSlopeAccel();
             player.setSliding(true);
             return;
         }

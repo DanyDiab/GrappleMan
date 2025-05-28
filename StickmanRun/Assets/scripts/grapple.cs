@@ -36,6 +36,7 @@ public class Grapple : MonoBehaviour
     public float speedBoost;
 
     float distance;
+    float pushForce;
 
 // inputs
     bool leftClick;
@@ -75,6 +76,7 @@ public class Grapple : MonoBehaviour
         reverseDir = false;
         lastPos = transform.position;
         speedBoost = 350;
+        pushForce = 75;
 
     }
 
@@ -134,6 +136,8 @@ public class Grapple : MonoBehaviour
                 determinePullOrPush();
                 calculateMoveDirection();
                 moveDir *= -1;
+                // parentRb.AddForce(moveDir * pushForce, ForceMode2D.Impulse);
+                // currState = grapplerState.Retracting;
                 applyMove();
                 break;
         }
@@ -261,6 +265,8 @@ public class Grapple : MonoBehaviour
     {
         parentRb.AddForce(speedBoost * moveDir, ForceMode2D.Force);
     }
+
+
 
 
     protected void drawLine()

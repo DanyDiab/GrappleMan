@@ -38,8 +38,8 @@ public class Mushroom : MonoBehaviour
             airTime.endAir();
             maxAirTime = airTime.getAirTime();
             addForces = true;
-            Vector2 launchVector = calculateDirToJump();
-            jumpedRb.AddForce(launchVector * jumpBoost, ForceMode2D.Impulse);
+            // Vector2 launchVector = calculateDirToJump();
+            jumpedRb.AddForce(Vector2.up * jumpBoost, ForceMode2D.Impulse);
             // jumpedRb.gravityScale = jumpedRb.gravityScale * 2;
 
         }
