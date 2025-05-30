@@ -4952,6 +4952,7 @@ GameObject:
   - component: {fileID: 1636628600167153643}
   - component: {fileID: 4935368825610715664}
   - component: {fileID: 8343797855601732612}
+  - component: {fileID: 401457824491007798}
   m_Layer: 14
   m_Name: Flag
   m_TagString: Untagged
@@ -5018,6 +5019,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 0}
   text: {fileID: 0}
+--- !u!114 &401457824491007798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7347889197216919189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cf94c838ef696141a6da1003a1eac29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  magnitude: 0.1
+  speed: 15
 --- !u!1 &7551869088346840957
 GameObject:
   m_ObjectHideFlags: 0

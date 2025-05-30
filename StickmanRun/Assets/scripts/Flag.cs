@@ -34,11 +34,10 @@ public class Flag : MonoBehaviour
     SpriteRenderer spriteRenderer;
     public Image image;
     public TextMeshProUGUI text;
+    Hover hover;
 
     void Start()
     {
-        floatingSpeed = 15f;
-        floatingAmplitude = .1f;
         rb = GetComponentInParent<Rigidbody2D>();
         floatingParticles = GetComponentInChildren<ParticleSystem>();
         originalPos = transform.position;
@@ -46,6 +45,7 @@ public class Flag : MonoBehaviour
         confirmedTime = 1f;
         player = FindAnyObjectByType<Player>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        hover = GetComponent<Hover>();
     }
 
 
@@ -85,10 +85,7 @@ public class Flag : MonoBehaviour
 
     void floatingSprite()
     {
-        float sineValue = Mathf.Sin(Time.time * floatingSpeed) * floatingAmplitude;
-        transform.position = new Vector3(0, sineValue, 0) + originalPos;
-        transform.rotation = Quaternion.Euler(0, 0, 0);
-
+        hover.startFloat();
     }
 
     void checkForInput()
@@ -140,6 +137,7 @@ public class Flag : MonoBehaviour
         {
             currentFlag = this;
             currState = FlagState.InInventory;
+            hover.endFloat();
             floatingParticles.Stop();
             foreach (Transform child in transform)
             {

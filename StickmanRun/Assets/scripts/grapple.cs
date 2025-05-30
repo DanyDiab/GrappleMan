@@ -59,12 +59,21 @@ public class Grapple : MonoBehaviour
     GrappleHandPosition grappleHandPosition;
     LineRenderer lineRenderer;
 
+    // particle
+    public ParticleSystem explosion;
+    bool startParticles;
+    float playTime;
+    float currTime; 
+
 
     public event OnGrappleAttach OnGrapple;
 
 
     protected void Start()
     {
+        explosion.Stop();
+        startParticles = false;
+
         parentRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
         grappleHandPosition = transform.parent.gameObject.GetComponent<GrappleHandPosition>();
         currState = grapplerState.Idle;
@@ -77,7 +86,7 @@ public class Grapple : MonoBehaviour
         lastPos = transform.position;
         speedBoost = 350;
         pushForce = 75;
-
+        playTime = .6f;
     }
 
     void FixedUpdate()
@@ -102,10 +111,6 @@ public class Grapple : MonoBehaviour
             case grapplerState.Attached:
                 determinePullOrPush();
                 keepHeadInPlace(true);
-                if (leftClick)
-                {
-                    currState = grapplerState.Retracting;
-                }
                 break;
             case grapplerState.Retracting:
                 retractGrappler();
@@ -133,12 +138,13 @@ public class Grapple : MonoBehaviour
                     break;
                 }
                 // if not pulling object input
+                startParticles = true;
                 determinePullOrPush();
                 calculateMoveDirection();
                 moveDir *= -1;
-                // parentRb.AddForce(moveDir * pushForce, ForceMode2D.Impulse);
-                // currState = grapplerState.Retracting;
-                applyMove();
+                parentRb.AddForce(moveDir * pushForce, ForceMode2D.Impulse);
+                currState = grapplerState.Retracting;
+                // applyMove();
                 break;
         }
     }
@@ -149,9 +155,28 @@ public class Grapple : MonoBehaviour
         {
             rayCastCollide();
         }
-        if (distance > length)
+        if (distance > length || ((currState != grapplerState.Idle) && !leftClick))
         {
             currState = grapplerState.Retracting;
+        }
+        if (startParticles)
+        {
+            explosion.gameObject.transform.parent = null;
+            currTime += Time.deltaTime;
+            explosion.Play();
+            if (currTime > playTime)
+            {
+                currTime = 0f;
+                startParticles = false;
+
+            }
+        }
+        else
+        {
+            explosion.Stop();
+            explosion.transform.localPosition = Vector3.zero;
+            explosion.gameObject.transform.parent = transform;
+
         }
     }
 
@@ -163,11 +188,6 @@ public class Grapple : MonoBehaviour
 
     void determinePullOrPush()
     {
-        if (leftClick)
-        {
-            currState = grapplerState.Retracting;
-            return;
-        }
         if (parentRb.position.x - rb.position.x > 0)
         {
             if (aPressed)
@@ -239,10 +259,10 @@ public class Grapple : MonoBehaviour
         // Debug.Log(distance);
     }
 
-    public void resetStates()
-    {
+    public void resetStates(){
         // set state to idle/default
         transform.parent = parentRb.transform;
+        transform.localPosition = Vector3.zero;
         pullObject = null;
         distance = 0;
         rb.velocity = Vector2.zero;
@@ -314,6 +334,7 @@ public class Grapple : MonoBehaviour
         if (hit.collider != null)
         {
             grapplerAttach(hit.collider);
+            // Debug.Log("attahcing!"); 
         }
         lastPos = transform.position;
     }
@@ -326,6 +347,11 @@ public class Grapple : MonoBehaviour
         OnGrapple?.Invoke();
         currState = grapplerState.Attached;
         attachedRigidBody = collider.attachedRigidbody;
+
+        if (collider.gameObject.layer != LayerMask.NameToLayer("Floor"))
+        {
+            attachedRigidBody = collider.attachedRigidbody;        
+        }
         if (collider.gameObject.layer == LayerMask.NameToLayer("Pullables"))
         {
             pullObject = collider.GetComponentInParent<Pullable>();
@@ -351,6 +377,6 @@ public class Grapple : MonoBehaviour
     
         public bool isDeployed()
     {
-        return currState !=  grapplerState.Idle && currState !=  grapplerState.Retracting;
+        return currState != grapplerState.Idle && currState != grapplerState.Retracting;
     }
 }

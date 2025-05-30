@@ -12,6 +12,10 @@ public class CamFollow : MonoBehaviour
     float camSize;
     float camDamping;
     float zoomSpeed;
+    float minZoom;
+    float maxZoom;
+    float minSpeed;
+    float maxSpeed;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +23,10 @@ public class CamFollow : MonoBehaviour
         cameraa = GetComponent<Camera>();
         zoomSpeed = 6f;
         camDamping = 3f;
+        minZoom = 10f;
+        maxZoom = 20f;
+        minSpeed = 0f;
+        maxSpeed = 100f;
     }
     // Update is called once per frame
     void LateUpdate(){
@@ -26,7 +34,7 @@ public class CamFollow : MonoBehaviour
         if(transform.position != pos){
             transform.position = Vector3.Lerp(transform.position, pos, Time.deltaTime * camDamping);
         }
-        updateCamZoom();
+        // updateCamZoom();
     }
 
 
@@ -35,14 +43,14 @@ public class CamFollow : MonoBehaviour
     // .1 = 20
 
     void updateCamZoom(){
-        float moved = (lastFrame - transform.position).magnitude;
-        lastFrame = transform.position;
-        camSize = moved * 100;
+        float moved = (lastFrame - target.transform.position).magnitude;
+        lastFrame = target.transform.position;
+        // camSize = Mathf.Clamp();
         updateCamSize();
     }
 
     void updateCamSize(){
-        // Debug.Log(camSize);
+        Debug.Log(camSize);
         if(cameraa.orthographicSize < camSize){
             cameraa.orthographicSize += .02f;
         }
