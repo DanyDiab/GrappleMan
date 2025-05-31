@@ -18,14 +18,15 @@ public class PressurePlate : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collider2D){
         // ignore collision with the floor
-        if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor") || collider2D.gameObject.tag == "PPBody") return;
+        Debug.Log(collider2D.gameObject.tag);
+        if (collider2D.gameObject.layer == LayerMask.NameToLayer("Floor") || collider2D.gameObject.tag == "PPBody" || collider2D.gameObject.tag == "Grappler") return;
         spriteRenderer.sprite = pressed;
         door.startOpen();
     }
 
     void OnTriggerExit2D(Collider2D collider2D){
         // ignore collision with the floor
-        if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor") || collider2D.gameObject.tag == "PPBody") return;
+        if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor") || collider2D.gameObject.tag == "PPBody" || collider2D.gameObject.tag == "Grappler") return;
         spriteRenderer.sprite = notPressed;
         door.startClose();
     }
