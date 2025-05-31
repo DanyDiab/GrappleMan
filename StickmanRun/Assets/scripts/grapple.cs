@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 
 public enum grapplerState {
@@ -142,6 +143,7 @@ public class Grapple : MonoBehaviour
                 determinePullOrPush();
                 calculateMoveDirection();
                 moveDir *= -1;
+                capMoveDir();
                 parentRb.AddForce(moveDir * pushForce, ForceMode2D.Impulse);
                 currState = grapplerState.Retracting;
                 // applyMove();
@@ -217,6 +219,12 @@ public class Grapple : MonoBehaviour
         currState = grapplerState.Attached;
         return;   
     
+    }
+
+    void capMoveDir()
+    {
+        if (moveDir.x > .5f) moveDir.x = .5f;
+        else if (moveDir.x < -.5f) moveDir.x = -.5f;
     }
 
     public void cast()

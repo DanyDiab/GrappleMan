@@ -7,6 +7,7 @@ using UnityEngine;
 public class Mushroom : MonoBehaviour
 {
     float jumpBoost;
+    float minBoost;
     Rigidbody2D jumpedRb;
     AirTime airTime;
     bool addForces;
@@ -21,7 +22,7 @@ public class Mushroom : MonoBehaviour
     void Start()
     {
         objectShake = GetComponent<ObjectShake>();
-        jumpBoost = 70f;
+        minBoost = 70f;
         maxForce = 25f;
         
     }
@@ -41,6 +42,8 @@ public class Mushroom : MonoBehaviour
             airTime.endAir();
             // maxAirTime = airTime.getAirTime();
             // if (maxAirTime < 1f) maxAirTime = 1f;
+            jumpBoost = calculateJumpBoost();
+            Debug.Log("jumpBoost = " + jumpBoost);
             jumpedRb.AddForce(Vector2.up * jumpBoost, ForceMode2D.Impulse);
             maxAirTime = 1f;
             addForces = true;
@@ -66,6 +69,12 @@ public class Mushroom : MonoBehaviour
 
         Vector2 perp = new Vector2(xUp, yUp);
         return perp;
+    }
+    float calculateJumpBoost()
+    {
+        Debug.Log(jumpedRb.velocity.x);
+        float velocityBounce = Math.Abs(jumpedRb.velocity.x) * 3.5f;
+        return Mathf.Max(velocityBounce, minBoost);
     }
 
     void FixedUpdate()
