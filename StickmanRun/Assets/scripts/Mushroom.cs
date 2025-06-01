@@ -29,7 +29,7 @@ public class Mushroom : MonoBehaviour
 
     // Update is called once per frame
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerStay2D(Collider2D other)
     {
         if (other.tag == "Grappler") return;
         jumpedRb = other.attachedRigidbody;
@@ -44,7 +44,8 @@ public class Mushroom : MonoBehaviour
             // if (maxAirTime < 1f) maxAirTime = 1f;
             jumpBoost = calculateJumpBoost();
             Debug.Log("jumpBoost = " + jumpBoost);
-            jumpedRb.AddForce(Vector2.up * jumpBoost, ForceMode2D.Impulse);
+            jumpedRb.velocity = Vector2.zero;
+            jumpedRb.AddForce(transform.up * jumpBoost, ForceMode2D.Impulse);
             maxAirTime = 1f;
             addForces = true;
             // Vector2 launchVector = calculateDirToJump();
@@ -61,15 +62,10 @@ public class Mushroom : MonoBehaviour
         }
     }
 
-    Vector2 calculateDirToJump()
-    {
-        float angle = transform.rotation.z - 180;
-        float xUp = Mathf.Cos(angle);
-        float yUp = Mathf.Sin(angle);
-
-        Vector2 perp = new Vector2(xUp, yUp);
-        return perp;
-    }
+    // Vector2 calculateDirToJump()
+    // {
+    //     Vector2 normal = transform.up;
+    // }
     float calculateJumpBoost()
     {
         Debug.Log(jumpedRb.velocity.x);

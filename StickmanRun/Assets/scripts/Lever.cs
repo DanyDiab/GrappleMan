@@ -40,7 +40,7 @@ public class Lever : MonoBehaviour
                 spriteRenderer.sprite = activeSprite;
                 if (grapple != null && grapple.getState() == grapplerState.PullingObject)
                 {
-                    grapple.resetStates();
+                    // grapple.resetStates();
                     BoxCollider2D[] colliders = GetComponentsInChildren<BoxCollider2D>(true);
                     foreach (BoxCollider2D col in colliders)
                     {
