@@ -7,14 +7,16 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 
 
-public enum grapplerState {
+public enum grapplerState
+{
     Idle,
     Casting,
     Attached,
     PullingPlayer,
     PullingObject,
     Swinging,
-    Retracting
+    Retracting,
+    Exploding,
 }
 
 public class Grapple : MonoBehaviour
@@ -43,6 +45,7 @@ public class Grapple : MonoBehaviour
     bool leftClick;
     bool aPressed;
     bool dPressed;
+    bool wPressed;
     bool reverseDir;
 
     // rigidbodies
@@ -92,9 +95,6 @@ public class Grapple : MonoBehaviour
 
     void FixedUpdate()
     {
-        aPressed = Input.GetKey(KeyCode.A);
-        dPressed = Input.GetKey(KeyCode.D);
-        leftClick = Input.GetMouseButton(0);
         distance = Vector2.Distance(parentRb.position, transform.position);
         switch (currState)
         {
@@ -136,11 +136,10 @@ public class Grapple : MonoBehaviour
                     pullObject.getRb().velocity = rb.velocity;
                     pullObject.setIsPulled(true);
                     retractGrappler();
-                    break;
                 }
-                // if not pulling object input
+                break;
+            case grapplerState.Exploding:
                 startParticles = true;
-                determinePullOrPush();
                 calculateMoveDirection();
                 moveDir *= -1;
                 capMoveDir();
@@ -148,11 +147,16 @@ public class Grapple : MonoBehaviour
                 currState = grapplerState.Retracting;
                 // applyMove();
                 break;
+                // if not pulling object input
         }
     }
 
     void Update()
     {
+        aPressed = Input.GetKey(KeyCode.A);
+        dPressed = Input.GetKey(KeyCode.D);
+        wPressed = Input.GetKey(KeyCode.W);
+        leftClick = Input.GetMouseButton(0);
         if (currState == grapplerState.Casting)
         {
             rayCastCollide();
@@ -190,6 +194,11 @@ public class Grapple : MonoBehaviour
 
     void determinePullOrPush()
     {
+        if (wPressed)
+        {
+            currState = grapplerState.Exploding;
+            return;
+        }
         if (parentRb.position.x - rb.position.x > 0)
         {
             if (aPressed)

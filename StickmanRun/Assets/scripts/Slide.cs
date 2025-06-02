@@ -74,13 +74,18 @@ public class Slide : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(rb.position, Vector2.down, 6f, floorLayer);
         if (hit)
         {
-            Vector2 slope = hit.normal;
-            Vector2 perp = Vector2.Perpendicular(slope) * -1;
-            float angle = Vector2.Angle(Vector2.down, slope);
-            float adjustedAngle = 180 - angle;
-            float speed = adjustedAngle * slopeC;
+
+            // Vector2 slope = hit.normal;
+            // Vector2 perp = Vector2.Perpendicular(slope) * -1;
+            // float angle = Vector2.Angle(Vector2.down, slope);
+            // float adjustedAngle = 180 - angle;
+            // float speed = adjustedAngle * slopeC;
+            float speed = 200;
+            Vector2 slopeDir = transform.up;
+            Vector2 perp = Vector2.Perpendicular(slopeDir);
+            // Vector2 perp = new Vector2(-slopeDir.y, slopeDir.x);
             rb.AddForce(perp * speed, ForceMode2D.Force);
-            
+
         }
         // gravity * sin(angle) 
         // find the angle by casting a ray downwards

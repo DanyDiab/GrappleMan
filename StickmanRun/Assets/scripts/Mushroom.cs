@@ -43,8 +43,7 @@ public class Mushroom : MonoBehaviour
             // maxAirTime = airTime.getAirTime();
             // if (maxAirTime < 1f) maxAirTime = 1f;
             jumpBoost = calculateJumpBoost();
-            Debug.Log("jumpBoost = " + jumpBoost);
-            jumpedRb.velocity = Vector2.zero;
+            // jumpedRb.velocity = Vector2.zero;    
             jumpedRb.AddForce(transform.up * jumpBoost, ForceMode2D.Impulse);
             maxAirTime = 1f;
             addForces = true;
@@ -68,7 +67,6 @@ public class Mushroom : MonoBehaviour
     // }
     float calculateJumpBoost()
     {
-        Debug.Log(jumpedRb.velocity.x);
         float velocityBounce = Math.Abs(jumpedRb.velocity.x) * 3.5f;
         return Mathf.Max(velocityBounce, minBoost);
     }
