@@ -133,7 +133,7 @@ public class Flag : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collider)
     {
-        if (collider.tag == "Grappler" && currState != FlagState.InInventory)
+        if (collider.CompareTag("Grappler") && currState != FlagState.InInventory)
         {
             currentFlag = this;
             currState = FlagState.InInventory;

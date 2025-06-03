@@ -76,11 +76,11 @@ public class ZipLine : MonoBehaviour
         RaycastHit2D hit = Physics2D.Linecast(lastPos, bodyRb.position, collisionMask);
         Debug.DrawLine(lastPos, bodyRb.position, Color.red, 5f);
         if (hit.collider != null){
-            if (hit.collider.tag == "ZipEnd" && currState == ZipLineState.To)
+            if (hit.collider.CompareTag("ZipEnd") && currState == ZipLineState.To)
             {
                 currState = ZipLineState.Back;
             }
-            else if (hit.collider.tag == "ZipStart" && currState == ZipLineState.Back)
+            else if (hit.collider.CompareTag("ZipStart") && currState == ZipLineState.Back)
             {
                 currState = ZipLineState.Idle;
             }
@@ -101,7 +101,7 @@ public class ZipLine : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collider)
     {
-        if (collider.tag == "Grappler" && currState == ZipLineState.Idle){
+        if (collider.CompareTag("Grappler") && currState == ZipLineState.Idle){
                 currState = ZipLineState.To;
         }
     }

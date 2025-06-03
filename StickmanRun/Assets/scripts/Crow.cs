@@ -21,37 +21,44 @@ public class Crow : MonoBehaviour
     Vector2 midPos;
     Vector2 currPos;
     CrowState currState;
+    Animator animator;
+    Hover hover;
+    
 
     // Start is called before the first frame update
     void Start()
     {
         speed = .5f;
         endPos = end.position;
-        Debug.Log("end" + endPos);
         startPos = start.position;
-        Debug.Log("start" + startPos);
         currState = CrowState.Idle;
         rb = GetComponent<Rigidbody2D>();
         midPos = mid.position;
+        animator = GetComponentInChildren<Animator>();
+        hover = GetComponent<Hover>();
+        hover.endFloat();
     }
 
     // Update is called once per frame
     void FixedUpdate(){
-        Debug.Log(currState);
         switch(currState){
             case CrowState.Idle:
                 currPos = rb.position;
                 break;
             case CrowState.Ascending:
+                hover.startFloat();
+                animator.SetBool("isFlying", true);
                 if(moveTowards(midPos)){
                     currState = CrowState.Descending;
                 }
                 break;
             case CrowState.Descending:
                 if(moveTowards(endPos)){
+                    hover.endFloat();
                     Vector2 startTemp = startPos;
                     startPos = endPos;
                     endPos = startTemp;
+                    animator.SetBool("isFlying", false);
                     currState = CrowState.Idle;
                 }
                 break;
@@ -62,8 +69,6 @@ public class Crow : MonoBehaviour
 // returns true if reaches target and false otherwise
     bool moveTowards(Vector2 target){
         Vector2 dir = (target - rb.position).normalized;
-        Debug.Log("end" + target);
-        Debug.Log("at" + rb.position);
         rb.position += dir * speed;
         if((rb.position - target).magnitude < .5f){
 
@@ -75,7 +80,9 @@ public class Crow : MonoBehaviour
 
 
     void OnTriggerEnter2D(Collider2D collision){
-        if((collision.tag == "Grappler" || collision.tag == "Player") && currState == CrowState.Idle){
+        Debug.Log(tag);
+        if((collision.CompareTag("Grappler") || collision.CompareTag("Player")) && currState == CrowState.Idle)
+        {
             currState = CrowState.Ascending;
         }
         

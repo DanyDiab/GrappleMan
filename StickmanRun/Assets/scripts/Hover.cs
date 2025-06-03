@@ -25,8 +25,7 @@ public class Hover : MonoBehaviour
     {
         if (floating){
             float sineValue = Mathf.Sin(Time.time * speed) * magnitude;
-            transform.position = new Vector3(0, sineValue, 0) + originalPos;
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            transform.position = new Vector3(transform.position.x, originalPos.y + sineValue, transform.position.z);
         }
     }
 

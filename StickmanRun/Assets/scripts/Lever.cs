@@ -61,7 +61,7 @@ public class Lever : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.tag == "Stick" && currState == LeverState.NotActive)
+        if (collision.collider.CompareTag("Stick") && currState == LeverState.NotActive)
         {
 
             Destroy(collision.gameObject);
@@ -76,7 +76,7 @@ public class Lever : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Grappler")
+        if (collision.CompareTag("Grappler"))
         {
             grapple = collision.GetComponentInParent<Grapple>();
         }
