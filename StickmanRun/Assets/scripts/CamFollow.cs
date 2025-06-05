@@ -27,6 +27,8 @@ public class CamFollow : MonoBehaviour
         maxZoom = 20f;
         minSpeed = 0f;
         maxSpeed = 100f;
+        Vector3 pos = new Vector3(target.position.x,target.position.y, -1);
+        transform.position = pos;
     }
     // Update is called once per frame
     void LateUpdate(){

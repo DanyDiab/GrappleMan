@@ -21,7 +21,7 @@ public class Hover : MonoBehaviour
     }
 
 
-    void Update()
+    void LateUpdate()
     {
         if (floating){
             float sineValue = Mathf.Sin(Time.time * speed) * magnitude;

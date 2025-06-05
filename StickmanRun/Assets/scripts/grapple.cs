@@ -81,7 +81,7 @@ public class Grapple : MonoBehaviour
         parentRb = transform.parent.gameObject.GetComponent<Rigidbody2D>();
         grappleHandPosition = transform.parent.gameObject.GetComponent<GrappleHandPosition>();
         currState = grapplerState.Idle;
-        length = 20;
+        length = 16;
         grappleSpeed = 25;
         returnSpeed = 40;
         lineRenderer = GetComponentInChildren<LineRenderer>();
@@ -129,6 +129,7 @@ public class Grapple : MonoBehaviour
                 break;
             case grapplerState.PullingObject:
                 keepHeadInPlace(true);
+                determinePullOrPush();
                 // pulling function
                 if (pullObject != null)
                 {
@@ -347,17 +348,22 @@ public class Grapple : MonoBehaviour
 
     void rayCastCollide()
     {
-        RaycastHit2D hit = Physics2D.Linecast(lastPos, transform.position, collisionMask);
+        float distance = Vector2.Distance(transform.position, lastPos);
+        float buffer = .3f;
+        Vector2 extendedPos = lastPos + dir * (distance + buffer);
+        RaycastHit2D hit = Physics2D.Linecast(lastPos, extendedPos, collisionMask);
         if (hit.collider != null)
         {
-            grapplerAttach(hit.collider);
+            grapplerAttach(hit.collider, hit.point);
             // Debug.Log("attahcing!"); 
         }
         lastPos = transform.position;
     }
 
-    void grapplerAttach(Collider2D collider)
+    void grapplerAttach(Collider2D collider, Vector2 attachPoint)
     {
+        // set the grappler position to attachedPoint
+        transform.position = attachPoint;
         parentRb = transform.parent.GetComponent<Rigidbody2D>();
         grappleHandPosition = transform.parent.GetComponent<GrappleHandPosition>();
         transform.parent = null;

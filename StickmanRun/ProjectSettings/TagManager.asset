@@ -18,6 +18,9 @@ TagManager:
   - ZipStart
   - ZipEnd
   - CrowBody
+  - CrowMid
+  - CrowEnd
+  - CrowStart
   layers:
   - Default
   - TransparentFX

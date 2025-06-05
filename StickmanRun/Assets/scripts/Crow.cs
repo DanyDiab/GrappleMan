@@ -13,78 +13,104 @@ public class Crow : MonoBehaviour
 {
     float speed;
     Rigidbody2D rb;
-    public Transform end;
     public Transform start;
     public Transform mid;
+    public Transform end;
     Vector2 endPos;
     Vector2 startPos;
     Vector2 midPos;
     Vector2 currPos;
     CrowState currState;
     Animator animator;
-    Hover hover;
+    SpriteRenderer spriteRenderer;
+    Vector2 dir;
+    public LayerMask collisionMask;
+    Vector2 lastPos;
+    public Rigidbody2D bodyRb;
+
     
 
     // Start is called before the first frame update
     void Start()
     {
         speed = .5f;
-        endPos = end.position;
-        startPos = start.position;
+        endPos = end.transform.position;
+        startPos = start.transform.position;
         currState = CrowState.Idle;
-        rb = GetComponent<Rigidbody2D>();
-        midPos = mid.position;
+        rb = GetComponentInChildren<Rigidbody2D>();
+        midPos = mid.transform.position;
         animator = GetComponentInChildren<Animator>();
-        hover = GetComponent<Hover>();
-        hover.endFloat();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        bodyRb.transform.parent = null;
+
     }
 
     // Update is called once per frame
     void FixedUpdate(){
         switch(currState){
             case CrowState.Idle:
-                currPos = rb.position;
+                currPos = bodyRb.position;
                 break;
             case CrowState.Ascending:
-                hover.startFloat();
-                animator.SetBool("isFlying", true);
-                if(moveTowards(midPos)){
-                    currState = CrowState.Descending;
-                }
+                moveTowards(midPos);
                 break;
             case CrowState.Descending:
-                if(moveTowards(endPos)){
-                    hover.endFloat();
-                    Vector2 startTemp = startPos;
-                    startPos = endPos;
-                    endPos = startTemp;
-                    animator.SetBool("isFlying", false);
-                    currState = CrowState.Idle;
-                }
+                moveTowards(endPos);
                 break;
         }
     }
-
-
-// returns true if reaches target and false otherwise
-    bool moveTowards(Vector2 target){
-        Vector2 dir = (target - rb.position).normalized;
-        rb.position += dir * speed;
-        if((rb.position - target).magnitude < .5f){
-
-            return true;
-        }
-        return false;
-                
+    void Update()
+    {
+        flipSprite();
+        rayCastCollide();
     }
 
 
-    void OnTriggerEnter2D(Collider2D collision){
-        Debug.Log(tag);
+    // returns true if reaches target and false otherwise
+    void moveTowards(Vector2 target){
+        dir = (target - bodyRb.position).normalized;
+        bodyRb.position += dir * speed;     
+    }
+
+    void flipSprite(){
+        if(dir.x > 0){
+            spriteRenderer.flipX = false;
+        }
+        else{
+            spriteRenderer.flipX = true;
+        }
+    }
+
+    void rayCastCollide()
+    {
+        RaycastHit2D hit = Physics2D.Linecast(lastPos, bodyRb.position, collisionMask);
+        if(hit.collider != null){
+            if(hit.collider.CompareTag("CrowMid") && currState == CrowState.Ascending){
+                currState = CrowState.Descending;
+            }
+            if(hit.collider.CompareTag("CrowEnd") && currState == CrowState.Descending){
+                Transform temp = start;
+                start = end;
+                end = temp;
+                start.tag = "CrowStart";
+                end.tag = "CrowEnd";
+                startPos = start.transform.position;
+                endPos = end.transform.position;
+                midPos = mid.transform.position;
+                dir *= -1;
+                animator.SetBool("isFlying", false);
+                currState = CrowState.Idle;
+            }
+        }
+        lastPos = bodyRb.position;
+    }
+
+
+    void OnTriggerStay2D(Collider2D collision){
         if((collision.CompareTag("Grappler") || collision.CompareTag("Player")) && currState == CrowState.Idle)
         {
             currState = CrowState.Ascending;
-        }
-        
+            animator.SetBool("isFlying", true);
+        }  
     }
 }

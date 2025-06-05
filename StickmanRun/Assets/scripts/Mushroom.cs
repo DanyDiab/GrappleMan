@@ -37,18 +37,16 @@ public class Mushroom : MonoBehaviour
         if (jumpedRb != null && !jumped)
         {
             jumped = true;
-            // jumpedRb.gravityScale = jumpedRb.gravityScale / 2;
             objectShake.objectShake();
             airTime.endAir();
-            // maxAirTime = airTime.getAirTime();
-            // if (maxAirTime < 1f) maxAirTime = 1f;
             jumpBoost = calculateJumpBoost();
-            // jumpedRb.velocity = Vector2.zero;    
+            Debug.Log(transform.up);
+            float jumpX = transform.up.x;
+            float currX = jumpedRb.velocity.x;
+            if((jumpX > 0 && currX < 0) || (jumpX < 0 && currX > 0)) jumpedRb.velocity = new Vector2(jumpedRb.velocity.y,-jumpedRb.velocity.x);
             jumpedRb.AddForce(transform.up * jumpBoost, ForceMode2D.Impulse);
             maxAirTime = 1f;
             addForces = true;
-            // Vector2 launchVector = calculateDirToJump();
-            // jumpedRb.gravityScale = jumpedRb.gravityScale * 2;
 
         }
     }

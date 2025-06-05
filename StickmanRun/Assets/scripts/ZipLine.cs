@@ -74,7 +74,6 @@ public class ZipLine : MonoBehaviour
     void rayCastCollide()
     {
         RaycastHit2D hit = Physics2D.Linecast(lastPos, bodyRb.position, collisionMask);
-        Debug.DrawLine(lastPos, bodyRb.position, Color.red, 5f);
         if (hit.collider != null){
             if (hit.collider.CompareTag("ZipEnd") && currState == ZipLineState.To)
             {
@@ -90,8 +89,7 @@ public class ZipLine : MonoBehaviour
 
 
 
-    void drawLine()
-    {
+    void drawLine(){
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, startPos);
         lineRenderer.SetPosition(1, endPos);
@@ -99,8 +97,8 @@ public class ZipLine : MonoBehaviour
     }
 
 
-    void OnTriggerStay2D(Collider2D collider)
-    {
+    void OnTriggerStay2D(Collider2D collider){
+        Debug.Log(collider.tag);
         if (collider.CompareTag("Grappler") && currState == ZipLineState.Idle){
                 currState = ZipLineState.To;
         }
