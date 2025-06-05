@@ -27,26 +27,33 @@ public class Crow : MonoBehaviour
     public LayerMask collisionMask;
     Vector2 lastPos;
     public Rigidbody2D bodyRb;
+    MultiHitbox bodyHitbox;
 
     
 
     // Start is called before the first frame update
+
+
+    void Awake(){
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        animator = GetComponentInChildren<Animator>();
+        bodyHitbox = GetComponentInChildren<MultiHitbox>();
+        rb = GetComponentInChildren<Rigidbody2D>();
+        bodyRb.transform.parent = null;
+
+    }
     void Start()
     {
         speed = .5f;
         endPos = end.transform.position;
         startPos = start.transform.position;
         currState = CrowState.Idle;
-        rb = GetComponentInChildren<Rigidbody2D>();
         midPos = mid.transform.position;
-        animator = GetComponentInChildren<Animator>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        bodyRb.transform.parent = null;
-
     }
 
     // Update is called once per frame
     void FixedUpdate(){
+
         switch(currState){
             case CrowState.Idle:
                 currPos = bodyRb.position;
@@ -63,6 +70,10 @@ public class Crow : MonoBehaviour
     {
         flipSprite();
         rayCastCollide();
+    }
+
+    void LateUpdate(){
+        checkForCollision();
     }
 
 
@@ -105,12 +116,17 @@ public class Crow : MonoBehaviour
         lastPos = bodyRb.position;
     }
 
-
-    void OnTriggerStay2D(Collider2D collision){
-        if((collision.CompareTag("Grappler") || collision.CompareTag("Player")) && currState == CrowState.Idle)
-        {
+    void checkForCollision(){
+        if(bodyHitbox.isTriggered() && currState == CrowState.Idle){
+            bodyHitbox.resetTrigger();
+            Debug.Log("triggered!");
             currState = CrowState.Ascending;
             animator.SetBool("isFlying", true);
-        }  
+            return;
+        } 
+        bodyHitbox.resetTrigger();
     }
+
+
+
 }
