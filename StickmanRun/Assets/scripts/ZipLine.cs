@@ -26,10 +26,16 @@ public class ZipLine : MonoBehaviour
     public LayerMask collisionMask;
     Vector2 lastPos;
     LineRenderer lineRenderer;
+    MultiHitbox bodyHitbox;
 
 
 
     // Start is called before the first frame update
+
+    void Awake(){
+        bodyHitbox = GetComponentInChildren<MultiHitbox>();
+        bodyRb.transform.parent = null;
+    }
     void Start()
     {
         startPos = startTrans.position;
@@ -37,7 +43,6 @@ public class ZipLine : MonoBehaviour
         currState = ZipLineState.Idle;
         // rb = GetComponent<Rigidbody2D>();
         // bodyRb = Get<Rigidbody2D>();
-        bodyRb.transform.parent = null;
         lastPos = bodyRb.position;
         lineRenderer = GetComponentInChildren<LineRenderer>();
     }
@@ -61,6 +66,7 @@ public class ZipLine : MonoBehaviour
     {
         rayCastCollide();
         drawLine();
+        checkForCollision();
     }
 
     void move(bool towards, float speed)
@@ -87,6 +93,16 @@ public class ZipLine : MonoBehaviour
         lastPos = bodyRb.position;
     }
 
+    void checkForCollision(){
+        if (bodyHitbox.isTriggered() && currState == ZipLineState.Idle){
+            currState = ZipLineState.To;
+            bodyHitbox.resetTrigger();
+            return;
+        }
+        bodyHitbox.resetTrigger();
+
+    }
+
 
 
     void drawLine(){
@@ -94,13 +110,5 @@ public class ZipLine : MonoBehaviour
         lineRenderer.SetPosition(0, startPos);
         lineRenderer.SetPosition(1, endPos);
 
-    }
-
-
-    void OnTriggerStay2D(Collider2D collider){
-        Debug.Log(collider.tag);
-        if (collider.CompareTag("Grappler") && currState == ZipLineState.Idle){
-                currState = ZipLineState.To;
-        }
     }
 }

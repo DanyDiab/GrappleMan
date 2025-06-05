@@ -119,7 +119,6 @@ public class Crow : MonoBehaviour
     void checkForCollision(){
         if(bodyHitbox.isTriggered() && currState == CrowState.Idle){
             bodyHitbox.resetTrigger();
-            Debug.Log("triggered!");
             currState = CrowState.Ascending;
             animator.SetBool("isFlying", true);
             return;

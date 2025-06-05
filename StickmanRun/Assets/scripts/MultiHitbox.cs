@@ -10,7 +10,6 @@ public class MultiHitbox : MonoBehaviour
     {
         if (other.CompareTag("Player") || other.CompareTag("Grappler")){
             triggered = true;
-            Debug.Log(triggered);
         }   
     }
 
