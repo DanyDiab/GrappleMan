@@ -16,6 +16,8 @@ public class Mushroom : MonoBehaviour
     ObjectShake objectShake;
     float maxForce;
     bool jumped;
+    SoundManager soundManager;
+    public AudioClip jumpSound;
 
 
     // Start is called before the first frame update
@@ -24,6 +26,7 @@ public class Mushroom : MonoBehaviour
         objectShake = GetComponent<ObjectShake>();
         minBoost = 70f;
         maxForce = 25f;
+        soundManager = FindAnyObjectByType<SoundManager>();
         
     }
 
@@ -36,6 +39,7 @@ public class Mushroom : MonoBehaviour
         airTime = other.GetComponentInParent<AirTime>();
         if (jumpedRb != null && !jumped)
         {
+            soundManager.playSound(jumpSound);
             jumped = true;
             objectShake.objectShake();
             airTime.endAir();
