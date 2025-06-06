@@ -35,6 +35,7 @@ public class Grapple : MonoBehaviour
     float grappleSpeed;
     float returnSpeed;
     float length;
+    float currMaxLength;
 
     public float speedBoost;
 
@@ -168,7 +169,7 @@ public class Grapple : MonoBehaviour
         {
             rayCastCollide();
         }
-        if (distance > length || ((currState != grapplerState.Idle) && !leftClick))
+        if (distance > currMaxLength || ((currState != grapplerState.Idle) && !leftClick))
         {
             currState = grapplerState.Retracting;
         }
@@ -285,6 +286,7 @@ public class Grapple : MonoBehaviour
 
     public void resetStates(){
         // set state to idle/default
+        currMaxLength = length;
         transform.parent = parentRb.transform;
         transform.localPosition = Vector3.zero;
         pullObject = null;
@@ -370,7 +372,8 @@ public class Grapple : MonoBehaviour
         // set the grappler position to attachedPoint
         soundManager.playSound(grappleAttach);
         transform.position = attachPoint;
-        
+        float currDistance = Vector2.Distance(Vector2.zero, attachPoint);
+        currMaxLength = Math.Max(length, currDistance);
         parentRb = transform.parent.GetComponent<Rigidbody2D>();
         grappleHandPosition = transform.parent.GetComponent<GrappleHandPosition>();
         transform.parent = null;
