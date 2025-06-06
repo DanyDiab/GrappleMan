@@ -28,6 +28,8 @@ public class Crow : MonoBehaviour
     Vector2 lastPos;
     public Rigidbody2D bodyRb;
     MultiHitbox bodyHitbox;
+    public AudioClip flap;
+    SoundManager soundManager;
 
     
 
@@ -39,6 +41,7 @@ public class Crow : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         bodyHitbox = GetComponentInChildren<MultiHitbox>();
         rb = GetComponentInChildren<Rigidbody2D>();
+        soundManager = FindAnyObjectByType<SoundManager>();
         bodyRb.transform.parent = null;
 
     }
@@ -111,6 +114,7 @@ public class Crow : MonoBehaviour
                 dir *= -1;
                 animator.SetBool("isFlying", false);
                 currState = CrowState.Idle;
+                soundManager.endSounds();
             }
         }
         lastPos = bodyRb.position;
@@ -121,6 +125,7 @@ public class Crow : MonoBehaviour
             bodyHitbox.resetTrigger();
             currState = CrowState.Ascending;
             animator.SetBool("isFlying", true);
+            soundManager.playSound(flap);
             return;
         } 
         bodyHitbox.resetTrigger();

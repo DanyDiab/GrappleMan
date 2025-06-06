@@ -69,6 +69,10 @@ public class Grapple : MonoBehaviour
     float playTime;
     float currTime; 
 
+    // audio
+    public AudioClip grappleAttach;
+    SoundManager soundManager;
+
 
     public event OnGrappleAttach OnGrapple;
 
@@ -91,6 +95,8 @@ public class Grapple : MonoBehaviour
         speedBoost = 350;
         pushForce = 75;
         playTime = .6f;
+
+        soundManager = FindAnyObjectByType<SoundManager>();
     }
 
     void FixedUpdate()
@@ -355,7 +361,6 @@ public class Grapple : MonoBehaviour
         if (hit.collider != null)
         {
             grapplerAttach(hit.collider, hit.point);
-            // Debug.Log("attahcing!"); 
         }
         lastPos = transform.position;
     }
@@ -363,7 +368,9 @@ public class Grapple : MonoBehaviour
     void grapplerAttach(Collider2D collider, Vector2 attachPoint)
     {
         // set the grappler position to attachedPoint
+        soundManager.playSound(grappleAttach);
         transform.position = attachPoint;
+        
         parentRb = transform.parent.GetComponent<Rigidbody2D>();
         grappleHandPosition = transform.parent.GetComponent<GrappleHandPosition>();
         transform.parent = null;
