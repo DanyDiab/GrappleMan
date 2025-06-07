@@ -36,13 +36,11 @@ public class Mushroom : MonoBehaviour
     {
         if (other.CompareTag("Grappler")) return;
         jumpedRb = other.attachedRigidbody;
-        airTime = other.GetComponentInParent<AirTime>();
         if (jumpedRb != null && !jumped)
         {
             soundManager.playSound(jumpSound);
             jumped = true;
             objectShake.objectShake();
-            airTime.endAir();
             jumpBoost = calculateJumpBoost();
             Debug.Log(transform.up);
             float jumpX = transform.up.x;

@@ -21,6 +21,7 @@ TagManager:
   - CrowMid
   - CrowEnd
   - CrowStart
+  - CatapultRock
   layers:
   - Default
   - TransparentFX

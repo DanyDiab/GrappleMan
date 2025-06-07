@@ -403,10 +403,20 @@ public class Grapple : MonoBehaviour
         return currState;
     }
 
+
+
+/// <summary>
+/// checking if pulling player or object
+/// </summary>
     public bool isActive()
     {
         return currState == grapplerState.PullingObject || currState == grapplerState.PullingPlayer;
     }
+
+
+    /// <summary>
+    /// check for not idle/retracting
+    /// </summary>
     
         public bool isDeployed()
     {
