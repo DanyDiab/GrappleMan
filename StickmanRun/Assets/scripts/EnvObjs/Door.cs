@@ -39,11 +39,10 @@ public class Door : MonoBehaviour
           close();
           break;
         case doorState.FullyOpen:
-          bodyCollider.enabled = false;
-          currState = doorState.Idle;
+          rb.velocity = Vector2.zero;
           break;
-          // not sure if i need this or not? 
         case doorState.FullyClosed:
+          rb.velocity = Vector2.zero;
           break;
         case doorState.Idle:
           rb.velocity = Vector2.zero;
@@ -52,12 +51,12 @@ public class Door : MonoBehaviour
     }
     public void startOpen(){
     currState = doorState.Opening;
-    Debug.Log("Open!");
   }
 
   public void startClose(){
-    currState = doorState.Closing;
-    Debug.Log("Close!");
+    if(currState != doorState.FullyClosed){
+      currState = doorState.Closing;
+    }
   }
 
   public void open(){

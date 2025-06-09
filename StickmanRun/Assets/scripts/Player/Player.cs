@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     float movingTolerance;
     public ParticleSystem slidingParticles;
     bool isMoving;
+    bool spiked;
 
 
 
@@ -161,6 +162,12 @@ public class Player : MonoBehaviour
     public bool getIsMoving()
     {
         return isMoving;
+    }
+    public bool getSpiked(){
+        return spiked;
+    }
+    public void setSpiked(bool spiked){
+        this.spiked = spiked;
     }
 
 
