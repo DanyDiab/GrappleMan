@@ -1,7 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 
 public enum PauseState{
@@ -12,7 +15,7 @@ public enum PauseState{
 }
 public class PauseMenu : MonoBehaviour
 {
-    public Button resume;
+    [SerializeField] Button resume;
     public Button settings;
     public Button quit;
     PauseState currState;
@@ -25,6 +28,9 @@ public class PauseMenu : MonoBehaviour
     {
         inputs = GetComponent<Inputs>();
         currState = PauseState.Playing;
+        resume.onClick.AddListener(resumeClicked);
+        settings.onClick.AddListener(settingsClicked);
+        quit.onClick.AddListener(quitClicked);
     }
 
     // Update is called once per frame
@@ -45,8 +51,16 @@ public class PauseMenu : MonoBehaviour
                 toggleMenu(true);
                 break;
             case PauseState.Settings:
+                if(menuInteract) currState = PauseState.Playing;
+                Debug.Log("settings");
                 break;
             case PauseState.Quit:
+                #if UNITY_EDITOR
+                    EditorApplication.isPlaying = false;
+                #else
+        
+                    Application.Quit();
+                #endif
                 break;
         }
     }
@@ -56,5 +70,33 @@ public class PauseMenu : MonoBehaviour
             child.gameObject.SetActive(enable);
         }
     }
+
+    void OnMouseDown(){
+
+    }
+
+    void resumeClicked(){
+        if(currState == PauseState.Paused){
+            currState = PauseState.Playing;
+        }
+    }
+
+    void settingsClicked(){
+        if(currState == PauseState.Paused){
+            currState = PauseState.Settings;
+        }
+        else if(currState == PauseState.Settings){
+            currState = PauseState.Paused;
+        }
+    }
+
+    void quitClicked(){
+        if(currState == PauseState.Paused){
+            currState = PauseState.Quit;
+        }
+    }
+
+
+
 
 }
