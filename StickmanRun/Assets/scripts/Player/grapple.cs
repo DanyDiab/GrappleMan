@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,11 +44,13 @@ public class Grapple : MonoBehaviour
     float pushForce;
 
 // inputs
-    bool leftClick;
+    bool reverseDir;
     bool aPressed;
     bool dPressed;
     bool wPressed;
-    bool reverseDir;
+    bool leftClick;
+
+    Inputs inputs;
 
     // rigidbodies
     Rigidbody2D rb;
@@ -98,6 +101,7 @@ public class Grapple : MonoBehaviour
         playTime = .6f;
 
         soundManager = FindAnyObjectByType<SoundManager>();
+        inputs = GetComponent<Inputs>();
     }
 
     void FixedUpdate()
@@ -107,7 +111,7 @@ public class Grapple : MonoBehaviour
         {
             case grapplerState.Idle:
                 resetStates();
-                if (leftClick)
+                if (inputs.getMouseDown(0))
                 {
                     cast();
                     currState = grapplerState.Casting;
@@ -161,10 +165,10 @@ public class Grapple : MonoBehaviour
 
     void Update()
     {
-        aPressed = Input.GetKey(KeyCode.A);
-        dPressed = Input.GetKey(KeyCode.D);
-        wPressed = Input.GetKey(KeyCode.W);
-        leftClick = Input.GetMouseButton(0);
+        aPressed = inputs.getKeyDown(KeyCode.A);
+        dPressed = inputs.getKeyDown(KeyCode.D);
+        wPressed = inputs.getKeyDown(KeyCode.W);
+        leftClick = inputs.getMouseDown(0);
         if (currState == grapplerState.Casting)
         {
             rayCastCollide();

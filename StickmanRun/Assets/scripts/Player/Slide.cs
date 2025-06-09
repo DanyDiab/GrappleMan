@@ -17,6 +17,7 @@ public class Slide : MonoBehaviour
     bool startedSlide;
     public LayerMask floorLayer;
     float slopeC;
+    Inputs inputs;
 
 
     void Start()
@@ -27,10 +28,11 @@ public class Slide : MonoBehaviour
         rb = player.GetComponent<Rigidbody2D>();
         ogDrag = rb.drag;
         slopeC = 5f;
+        inputs = GetComponent<Inputs>();
     }
     void Update()
     {
-        sPressed = Input.GetKey(KeyCode.S);
+        sPressed = inputs.getKeyDown(KeyCode.S);
         slide();
         // if (startedSlide)
         // {

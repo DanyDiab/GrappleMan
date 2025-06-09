@@ -17,11 +17,13 @@ public class PauseMenu : MonoBehaviour
     public Button quit;
     PauseState currState;
     bool menuInteract;
+    Inputs inputs;
 
     
     // Start is called before the first frame update
     void Start()
     {
+        inputs = GetComponent<Inputs>();
         currState = PauseState.Playing;
     }
 
@@ -33,10 +35,13 @@ public class PauseMenu : MonoBehaviour
         switch(currState){
             case PauseState.Playing:
                 if(menuInteract) currState = PauseState.Paused;
+
+                inputs.toggleInput(true);
                 toggleMenu(false);
                 break;
-            case PauseState.Paused: 
+            case PauseState.Paused:
                 if(menuInteract) currState = PauseState.Playing;
+                inputs.toggleInput(false);
                 toggleMenu(true);
                 break;
             case PauseState.Settings:
@@ -45,12 +50,11 @@ public class PauseMenu : MonoBehaviour
                 break;
         }
     }
-
-
     void toggleMenu(bool enable){
         foreach (Transform child in transform)
         {
             child.gameObject.SetActive(enable);
         }
     }
+
 }
