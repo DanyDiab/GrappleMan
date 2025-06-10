@@ -19,7 +19,6 @@ public class PrefabSpawner : MonoBehaviour
     void Start()
     {
         spawning = true;
-        isAuto = false;
         interval = .5f;
     }
 

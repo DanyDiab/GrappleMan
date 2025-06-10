@@ -16,12 +16,11 @@ public class WaterPuzzle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currState = WaterPuzzleState.Complete;
+        currState = WaterPuzzleState.Idle;
         valves = GetComponentsInChildren<Valve>();
         bubbleSpawner = GetComponentInChildren<PrefabSpawner>();
         bubbleSpawner.toggleAuto(true);
         bubbleSpawner.setAutoSpawnVars(1f,head,1);
-        bubbleSpawner.setSpawning(false);
     }
 
     // Update is called once per frame
@@ -33,9 +32,10 @@ public class WaterPuzzle : MonoBehaviour
                 if(checkForValveCompletions()){
                     currState = WaterPuzzleState.Complete;
                 }
+                bubbleSpawner.setSpawning(false);
+
                 break;
             case WaterPuzzleState.Complete:
-
                 bubbleSpawner.setSpawning(true);
                 break;
 

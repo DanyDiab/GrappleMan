@@ -40,7 +40,6 @@ public class OpacityFlash : MonoBehaviour
 
     public void flash(){
         if(Time.time - startTime > totalTime){
-            Debug.Log("reset");
 
             flipSpriteOpacity(true);
             flashing = false;

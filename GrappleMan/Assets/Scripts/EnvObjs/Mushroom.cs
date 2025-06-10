@@ -43,7 +43,6 @@ public class Mushroom : MonoBehaviour
         if (jumpedRb != null && Time.time - lastJumpTime > jumpCooldown)
         {
             jumpedTag = other.tag;
-            Debug.Log("jumped");
             jumpBoost = calculateJumpBoost();
             reverseDirIfNeeded();
             lastJumpTime = Time.time;
