@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     public ParticleSystem slidingParticles;
     bool isMoving;
     bool spiked;
+    OpacityFlash opacityFlash;
 
 
 
@@ -34,6 +35,7 @@ public class Player : MonoBehaviour
         rb.freezeRotation = true;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         grapple = GetComponentInChildren<Grapple>();
+        opacityFlash = GetComponentInChildren<OpacityFlash>();
         movingTolerance = .1f;
     }
     void Update()
@@ -98,12 +100,13 @@ public class Player : MonoBehaviour
 
     void drawHand()
     {
+        if(opacityFlash.isFlashing()) return;
         if (grapple.getState() != grapplerState.Idle)
         {
-            hand.gameObject.SetActive(false);
+            hand.color = new Color(hand.color.r,hand.color.g,hand.color.b,0);
             return;
         }
-        hand.gameObject.SetActive(true);
+        hand.color = new Color(hand.color.r,hand.color.g,hand.color.b,1);
         if (currSprite == left || currSprite == right)
         {
             hand.transform.position = grappleHandPosition.handStartFacing.position;

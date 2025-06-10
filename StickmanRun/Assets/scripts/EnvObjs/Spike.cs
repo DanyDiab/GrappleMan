@@ -19,6 +19,9 @@ public class Spike : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other){
         if(other.gameObject.CompareTag("Player")){
+            OpacityFlash opacityFlash = other.gameObject.GetComponentInChildren<OpacityFlash>();
+            SpriteRenderer[] spriteRenderers = other.gameObject.transform.GetComponentsInChildren<SpriteRenderer>();
+            opacityFlash.startFlash(spriteRenderers,2f,0);
             Inputs.toggleInput(false, timePenalty);
         }
     }
