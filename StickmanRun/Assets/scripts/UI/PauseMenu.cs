@@ -45,22 +45,25 @@ public class PauseMenu : MonoBehaviour
             case PauseState.Paused:
                 Time.timeScale = 0f;
                 if(menuInteract){
-                    currState = PauseState.Playing;
                     Inputs.toggleInput(true);
-                } 
-
+                    currState = PauseState.Playing;
+                    return;
+                }
                 Inputs.toggleInput(false);
                 toggleMenu(true);
                 break;
             case PauseState.Settings:
-                if(menuInteract) currState = PauseState.Playing;
+                if(menuInteract) {
+                    Inputs.toggleInput(true);
+                    currState = PauseState.Playing;
+                    return;
+                }
                 Debug.Log("settings");
                 break;
             case PauseState.Quit:
                 #if UNITY_EDITOR
                     EditorApplication.isPlaying = false;
                 #else
-        
                     Application.Quit();
                 #endif
                 break;
@@ -71,10 +74,6 @@ public class PauseMenu : MonoBehaviour
         {
             child.gameObject.SetActive(enable);
         }
-    }
-
-    void OnMouseDown(){
-
     }
 
     void resumeClicked(){
