@@ -28,6 +28,7 @@ public class OpacityFlash : MonoBehaviour
 
 
     public void startFlash(SpriteRenderer[] sprites, float flashTime, float opacity){
+        if(flashing) return;
         flashing = true;
         totalTime = flashTime;
         spriteRenderers = sprites;
@@ -39,6 +40,8 @@ public class OpacityFlash : MonoBehaviour
 
     public void flash(){
         if(Time.time - startTime > totalTime){
+            Debug.Log("reset");
+
             flipSpriteOpacity(true);
             flashing = false;
             return;
