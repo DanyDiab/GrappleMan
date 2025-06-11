@@ -2,6 +2,8 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -17,6 +19,7 @@ public class PauseMenu : MonoBehaviour
 {
     [SerializeField] Button resume;
     public Button settings;
+    public Button mainMenu;
     public Button quit;
     PauseState currState;
     bool menuInteract;
@@ -29,6 +32,8 @@ public class PauseMenu : MonoBehaviour
         resume.onClick.AddListener(resumeClicked);
         settings.onClick.AddListener(settingsClicked);
         quit.onClick.AddListener(quitClicked);
+        mainMenu.onClick.AddListener(mainMenuClicked);
+
     }
 
     // Update is called once per frame
@@ -95,6 +100,12 @@ public class PauseMenu : MonoBehaviour
     void quitClicked(){
         if(currState == PauseState.Paused){
             currState = PauseState.Quit;
+        }
+    }
+
+    void mainMenuClicked(){
+        if(currState == PauseState.Paused){
+            SceneManager.LoadScene("MainMenu");
         }
     }
 
