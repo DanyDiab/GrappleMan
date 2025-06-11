@@ -32,6 +32,8 @@ public class WaterPuzzle : MonoBehaviour
                 if(checkForValveCompletions()){
                     currState = WaterPuzzleState.Complete;
                 }
+                bubbleSpawner.setSpawning(false);
+
                 break;
             case WaterPuzzleState.Complete:
                 Debug.Log("Complete");
