@@ -26,7 +26,7 @@ public class CamShake : MonoBehaviour
     }
     // Update is called once per frame
 
-    public void camShake()
+    public void camShake(Collider2D collider)
     {
         originalPos = transform.position;
         StartCoroutine(Shake());

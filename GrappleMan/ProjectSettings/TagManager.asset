@@ -23,6 +23,7 @@ TagManager:
   - CrowStart
   - CatapultRock
   - BubbleKillBox
+  - Valve
   layers:
   - Default
   - TransparentFX

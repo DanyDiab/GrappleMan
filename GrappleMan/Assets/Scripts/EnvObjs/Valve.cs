@@ -15,10 +15,14 @@ public class Valve : MonoBehaviour
     float startRotation;
     float targetRotation;
     float rotationSpeed;
+    Collider2D myCol;
     ParticleSystem[] particleSystems;
     // Start is called before the first frame update
     void Start()
     {
+        myCol = GetComponentInChildren<Collider2D>();
+        grapple = FindFirstObjectByType<Grapple>();
+        grapple.OnGrapple += checkGrappleAttached;
         startRotation = 0f;
         targetRotation = 270f;
         rotationSpeed = 1f;
@@ -53,19 +57,17 @@ public class Valve : MonoBehaviour
 
 
     void checkForGrapplePull(){
-        if(grappleAttached && grapple != null){
+        if(grappleAttached){
             if(grapple.getState() == grapplerState.PullingObject){
                 currState = ValveState.Turning;
-                grapple = null;
+                grappleAttached = false;
+                return;
+            }
+            if(!grapple.isDeployed()){
                 grappleAttached = false;
             }
-            if(grapple != null){
-                if(!grapple.isDeployed()){
-                    grapple = null;
-                    grappleAttached = false;
-                }
-            }
         }
+
     }
 
     bool rotateValve(){
@@ -76,17 +78,13 @@ public class Valve : MonoBehaviour
         return Mathf.Abs(transform.eulerAngles.z - targetRotation) <= rotationSpeed;
     }
 
-    void OnTriggerEnter2D(Collider2D collision){
-        if(collision.CompareTag("Grappler")){
-            grapple = collision.GetComponentInParent<Grapple>();
+    void checkGrappleAttached(Collider2D col){
+        if(col == myCol){
             grappleAttached = true;
-        }    
+        }
     }
 
     public bool isCompleted(){
         return currState == ValveState.Complete;
     }
-
-
-
 }

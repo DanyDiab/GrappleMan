@@ -78,7 +78,7 @@ public class Grapple : MonoBehaviour
     SoundManager soundManager;
 
 
-    public event OnGrappleAttach OnGrapple;
+    public event Action<Collider2D> OnGrapple;
 
 
     protected void Start()
@@ -381,7 +381,7 @@ public class Grapple : MonoBehaviour
         parentRb = transform.parent.GetComponent<Rigidbody2D>();
         grappleHandPosition = transform.parent.GetComponent<GrappleHandPosition>();
         transform.parent = null;
-        OnGrapple?.Invoke();
+        OnGrapple?.Invoke(collider);
         currState = grapplerState.Attached;
         attachedRigidBody = collider.attachedRigidbody;
 
@@ -392,11 +392,8 @@ public class Grapple : MonoBehaviour
         if (collider.gameObject.layer == LayerMask.NameToLayer("Pullables"))
         {
             pullObject = collider.GetComponentInParent<Pullable>();
-
         }
     }
-
-    public delegate void OnGrappleAttach();
 
     public Vector2 getDir()
     {

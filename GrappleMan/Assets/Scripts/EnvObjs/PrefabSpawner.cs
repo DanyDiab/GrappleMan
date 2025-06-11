@@ -25,6 +25,7 @@ public class PrefabSpawner : MonoBehaviour
 
     void Update(){
         if(!spawning) return;
+
         if(!isAuto){
            manualSpawn(); 
         }
@@ -32,6 +33,9 @@ public class PrefabSpawner : MonoBehaviour
             autoSpawn();
         }
     }
+
+
+    // change to an event system rather than collider system
 
     void manualSpawn(){
         if(grappleAttached && grapple != null){
@@ -50,6 +54,7 @@ public class PrefabSpawner : MonoBehaviour
     }
 
     void autoSpawn(){
+        Debug.Log("auto");
         if(Time.time - lastSpawnTime >= interval){
             float randX = Random.Range(-randomizeXPos,randomizeXPos);
             Vector2 randPos = new Vector2(parent.position.x + randX, parent.position.y);

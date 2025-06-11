@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7813541185737587618}
   m_Layer: 10
   m_Name: Valve
-  m_TagString: Untagged
+  m_TagString: Valve
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4918,7 +4918,7 @@ GameObject:
   - component: {fileID: 511513631012577636}
   m_Layer: 10
   m_Name: Hibox
-  m_TagString: Untagged
+  m_TagString: Valve
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
