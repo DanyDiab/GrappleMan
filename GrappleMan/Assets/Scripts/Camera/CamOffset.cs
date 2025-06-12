@@ -8,7 +8,6 @@ public class CamOffset : MonoBehaviour
     Inputs inputs;
     CamFollow camFollow;
     Vector2 camOffset;
-    Transform finalPos;
     bool[] inputsPressed;
     Transform originalTarget;
     public Transform newTarget;
@@ -19,7 +18,6 @@ public class CamOffset : MonoBehaviour
         inputs = GetComponent<Inputs>();
         camFollow = GetComponent<CamFollow>();
         offset = 5f;
-        finalPos = newTarget;
         originalTarget = camFollow.getTarget();
         inputsPressed = new bool[4];
     }

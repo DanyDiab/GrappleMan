@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public enum ValveState{
     Idle,
@@ -17,11 +18,13 @@ public class Valve : MonoBehaviour
     float rotationSpeed;
     Collider2D myCol;
     ParticleSystem[] particleSystems;
+    Light2D light;
     // Start is called before the first frame update
     void Start()
     {
         myCol = GetComponentInChildren<Collider2D>();
         grapple = FindFirstObjectByType<Grapple>();
+        light = GetComponentInChildren<Light2D>();
         grapple.OnGrapple += checkGrappleAttached;
         startRotation = 0f;
         targetRotation = 270f;
@@ -50,6 +53,7 @@ public class Valve : MonoBehaviour
                 }
                 break;
             case ValveState.Complete:
+                light.color = Color.green;
                 break;
         }
     }

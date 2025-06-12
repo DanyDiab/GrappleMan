@@ -12,9 +12,9 @@ public enum torchState
 public class Torch : MonoBehaviour
 {
     Light2D light;
-    float minIntense;
-    float maxIntense;
-    float flickerSpeed;
+    [SerializeField] float minIntense;
+    [SerializeField] float maxIntense;
+    [SerializeField] float flickerSpeed;
     torchState currState;
     float targetIntense;
     // Start is called before the first frame update
