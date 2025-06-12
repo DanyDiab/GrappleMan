@@ -7,7 +7,7 @@ public class CamFollow : MonoBehaviour
 {
 
     Camera cameraa;
-    public Transform target;
+    [SerializeField] Transform target;
     Vector3 lastFrame;
     float camSize;
     float camDamping;
@@ -36,29 +36,13 @@ public class CamFollow : MonoBehaviour
         if(transform.position != pos){
             transform.position = Vector3.Lerp(transform.position, pos, Time.deltaTime * camDamping);
         }
-        // updateCamZoom();
     }
 
-
-
-    // .08 = 10
-    // .1 = 20
-
-    void updateCamZoom(){
-        float moved = (lastFrame - target.transform.position).magnitude;
-        lastFrame = target.transform.position;
-        // camSize = Mathf.Clamp();
-        updateCamSize();
+    public Transform getTarget(){
+        return target;
     }
-
-    void updateCamSize(){
-        Debug.Log(camSize);
-        if(cameraa.orthographicSize < camSize){
-            cameraa.orthographicSize += .02f;
-        }
-        else if(cameraa.orthographicSize > camSize){
-            cameraa.orthographicSize -= .02f;
-        }
+    public void setTarget(Transform transform){
+        target = transform;
     }
     
 }
