@@ -51,6 +51,9 @@ public class Mushroom : MonoBehaviour
             soundManager.playSound(jumpSound);
             objectShake.objectShake();
         }
+        if(other.CompareTag("Player")){
+            other.transform.parent.GetComponentInParent<Player>().setgotBounce(true);
+        }
     }
 
     float calculateJumpBoost()

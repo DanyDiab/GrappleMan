@@ -19,6 +19,15 @@ public class Slide : MonoBehaviour
     float slopeC;
     Inputs inputs;
 
+    [Header("Slope Sliding Settings")]
+    public float maxSlopeForce = 15f;        // Maximum force applied on steep slopes
+    public float minSlopeAngle = 10f;        // Minimum angle to start applying slope force
+    public float maxSlopeAngle = 60f;        // Angle at which maximum force is applied
+    public float raycastDistance = .3f;     // Distance to cast ray for slope detection
+    
+    private Vector2 slopeDirection;          // Direction to apply slope force
+    private float currentSlopeAngle;         // Current slope angle
+
 
     void Start()
     {
@@ -50,11 +59,10 @@ public class Slide : MonoBehaviour
                 rb.drag = dragWhileSlide;
                 startedSlide = true;
             }
-            // addSlopeAccel();
             player.setSliding(true);
+            addSlopeAccelAverage();
             return;
         }
-        rb.drag = ogDrag;
         player.setSliding(false);
         startedSlide = false;
     }
@@ -70,26 +78,46 @@ public class Slide : MonoBehaviour
 
 
 // WIP 5/26/25
-    void addSlopeAccel()
+  void addSlopeAccelAverage()
     {
-
-        RaycastHit2D hit = Physics2D.Raycast(rb.position, Vector2.down, 6f, floorLayer);
-        if (hit)
+        RaycastHit2D[] validHits = player.GetValidFloorHits();
+        
+        if (validHits.Length > 0)
         {
-
-            // Vector2 slope = hit.normal;
-            // Vector2 perp = Vector2.Perpendicular(slope) * -1;
-            // float angle = Vector2.Angle(Vector2.down, slope);
-            // float adjustedAngle = 180 - angle;
-            // float speed = adjustedAngle * slopeC;
-            float speed = 200;
-            Vector2 slopeDir = transform.up;
-            Vector2 perp = Vector2.Perpendicular(slopeDir);
-            // Vector2 perp = new Vector2(-slopeDir.y, slopeDir.x);
-            rb.AddForce(perp * speed, ForceMode2D.Force);
-
+            Vector2 averageSlopeDirection = Vector2.zero;
+            float averageAngle = 0f;
+            int validSlopeCount = 0;
+            
+            foreach (RaycastHit2D hit in validHits)
+            {
+                Vector2 surfaceNormal = hit.normal;
+                float slopeAngle = Vector2.Angle(surfaceNormal, Vector2.up);
+                
+                if (slopeAngle >= minSlopeAngle)
+                {
+                    Vector2 hitSlopeDirection = Vector2.Perpendicular(surfaceNormal);
+                    if (hitSlopeDirection.y > 0)
+                        hitSlopeDirection = -hitSlopeDirection;
+                    
+                    averageSlopeDirection += hitSlopeDirection;
+                    averageAngle += slopeAngle;
+                    validSlopeCount++;
+                }
+            }
+            
+            if (validSlopeCount > 0)
+            {
+                averageSlopeDirection /= validSlopeCount;
+                currentSlopeAngle = averageAngle / validSlopeCount;
+                slopeDirection = averageSlopeDirection.normalized;
+                
+                float slopeForceMultiplier = Mathf.InverseLerp(minSlopeAngle, maxSlopeAngle, currentSlopeAngle);
+                float appliedForce = maxSlopeForce * slopeForceMultiplier;
+                rb.AddForce(slopeDirection * appliedForce, ForceMode2D.Force);
+                return;
+            }
         }
-        // gravity * sin(angle) 
-        // find the angle by casting a ray downwards
+
     }
+        
 }

@@ -418,7 +418,6 @@ public class Grapple : MonoBehaviour
     /// <summary>
     /// check for not idle/retracting
     /// </summary>
-    
         public bool isDeployed()
     {
         return currState != grapplerState.Idle && currState != grapplerState.Retracting;

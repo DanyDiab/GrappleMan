@@ -9,6 +9,9 @@ public class Player : MonoBehaviour
     bool sliding;
     bool onFloor;
     Grapple grappler;
+    [SerializeField] float onFloorDrag;
+    [SerializeField] float otherDrag;
+    [SerializeField] float slidingDrag;
 
 
     Rigidbody2D rb;
@@ -23,8 +26,20 @@ public class Player : MonoBehaviour
     float movingTolerance;
     public ParticleSystem slidingParticles;
     bool isMoving;
+    bool gotBounce;
     bool spiked;
     OpacityFlash opacityFlash;
+
+    [Header("Floor Detection")]
+    [SerializeField] LayerMask floorLayerMask;
+    [SerializeField] float raycastDistance = .6f;
+
+    [SerializeField] float raycastOffset = .1f;
+
+    [SerializeField] int numRays;
+
+
+
 
 
 
@@ -40,10 +55,13 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        adjustDrag();
+
         determineIfIsMoving();
         switchPlayerSprite();
         drawHand();
         enableSlidingParticles();
+        checkIfOnFloor();
         spriteRenderer.sprite = currSprite;
     }
 
@@ -123,25 +141,79 @@ public class Player : MonoBehaviour
 
     }
 
-    void OnTriggerExit2D(Collider2D collider2D)
-    {
-
-        if (collider2D.gameObject.layer == LayerMask.NameToLayer("Floor"))
-        {
-            onFloor = false;
-            return;
-
-        }
-
-    }
-    void OnTriggerStay2D(Collider2D collider2D)
-    {
-        if (collider2D.gameObject.layer == LayerMask.NameToLayer("Floor"))
-        {
-            onFloor = true;
+    void adjustDrag(){
+        if(sliding){
+            rb.drag = slidingDrag;
             return;
         }
+        else if(onFloor && !grapple.isDeployed() && !gotBounce){
+            rb.drag = onFloorDrag;
+        }
+
+        else{
+            rb.drag = otherDrag;
+        }
     }
+
+    void checkIfOnFloor(){
+        onFloor = false;
+        Bounds bounds = GetComponentInChildren<Collider2D>().bounds;
+        Vector2 rayOrigin = new Vector2(bounds.center.x, bounds.min.y);
+        for(int i = 0; i < numRays; i++){
+            Vector2 rayStart = rayOrigin;
+            if(numRays > 1){
+                float offsetRange = bounds.size.x * .4f;
+                float step = (offsetRange * 2) / (numRays -1);
+                rayStart.x += -offsetRange + (i * step);
+            }
+
+            RaycastHit2D hit = Physics2D.Raycast(rayStart, Vector2.down,raycastDistance, floorLayerMask);
+            if (hit.collider != null){
+                onFloor = true;
+                if(!hit.collider.CompareTag("Mushroom")) gotBounce = false; 
+                break;
+            }
+        }
+    }
+
+    public RaycastHit2D[] GetAllFloorRaycastHits()
+{
+    RaycastHit2D[] hits = new RaycastHit2D[numRays];
+    Bounds bounds = GetComponentInChildren<Collider2D>().bounds;
+    Vector2 rayOrigin = new Vector2(bounds.center.x, bounds.min.y);
+    
+    for(int i = 0; i < numRays; i++)
+    {
+        Vector2 rayStart = rayOrigin;
+        if(numRays > 1)
+        {
+            float offsetRange = bounds.size.x * .4f;
+            float step = (offsetRange * 2) / (numRays - 1);
+            rayStart.x += -offsetRange + (i * step);
+        }
+        
+        hits[i] = Physics2D.Raycast(rayStart, Vector2.down, raycastDistance, floorLayerMask);
+    }
+    
+    return hits;
+}
+
+public RaycastHit2D[] GetValidFloorHits()
+{
+    RaycastHit2D[] allHits = GetAllFloorRaycastHits();
+    List<RaycastHit2D> validHits = new List<RaycastHit2D>();
+    
+    foreach(RaycastHit2D hit in allHits)
+    {
+        if(hit.collider != null)
+        {
+            validHits.Add(hit);
+        }
+    }
+    
+    return validHits.ToArray();
+}
+
 
     public bool InAir()
     {
@@ -171,6 +243,9 @@ public class Player : MonoBehaviour
     }
     public void setSpiked(bool spiked){
         this.spiked = spiked;
+    }
+    public void setgotBounce(bool gotBounce){
+        this.gotBounce = gotBounce;
     }
 
 
