@@ -24,6 +24,7 @@ TagManager:
   - CatapultRock
   - BubbleKillBox
   - Valve
+  - Mushroom
   layers:
   - Default
   - TransparentFX

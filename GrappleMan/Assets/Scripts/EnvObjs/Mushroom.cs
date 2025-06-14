@@ -50,10 +50,14 @@ public class Mushroom : MonoBehaviour
             jumpedRb.AddForce(transform.up * jumpBoost, ForceMode2D.Impulse);
             soundManager.playSound(jumpSound);
             objectShake.objectShake();
+            if(other.CompareTag("Player")){
+                move move = other.transform.parent.GetComponentInParent<move>();
+                other.transform.parent.GetComponentInParent<Player>().setgotBounce(true);
+                 move.resetAirX(jumpedRb.velocity.x);
+                 move.resetGravityAcceleration();
+            }
         }
-        if(other.CompareTag("Player")){
-            other.transform.parent.GetComponentInParent<Player>().setgotBounce(true);
-        }
+
     }
 
     float calculateJumpBoost()

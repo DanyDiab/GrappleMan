@@ -91,4 +91,11 @@ public class move : MonoBehaviour
         }
         airTime.endAir();
     }
+
+    public void resetAirX(float newAirX){
+        airX = newAirX;
+    }
+    public void resetGravityAcceleration(){
+        rb.gravityScale = ogGScale;
+    }
 }
