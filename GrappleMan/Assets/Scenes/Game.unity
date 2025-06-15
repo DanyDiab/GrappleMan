@@ -359422,7 +359422,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5666649762581438019, guid: 73db11b76fdcd1f4995bce150669dc76, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 53.47
+      value: 55.54
       objectReference: {fileID: 0}
     - target: {fileID: 5666649762581438019, guid: 73db11b76fdcd1f4995bce150669dc76, type: 3}
       propertyPath: m_LocalPosition.z
@@ -393682,7 +393682,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &525041435
 Transform:
   m_ObjectHideFlags: 0
@@ -393736,7 +393736,9 @@ CompositeCollider2D:
   m_GeometryType: 0
   m_GenerationType: 0
   m_EdgeRadius: 0
-  m_ColliderPaths: []
+  m_ColliderPaths:
+  - m_Collider: {fileID: 525041438}
+    m_ColliderPaths: []
   m_CompositePaths:
     m_Paths: []
   m_VertexDistance: 0.0005
@@ -426409,7 +426411,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 5
 --- !u!1 &1550244134
 GameObject:
