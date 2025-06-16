@@ -64,7 +64,6 @@ public class Valve : MonoBehaviour
         if(grappleAttached){
             if(grapple.getState() == grapplerState.PullingObject){
                 currState = ValveState.Turning;
-                grappleAttached = false;
                 return;
             }
             if(!grapple.isDeployed()){

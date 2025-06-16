@@ -15,11 +15,15 @@ public class PrefabSpawner : MonoBehaviour
     float lastSpawnTime;
     Transform parent;
     float randomizeXPos;
+    Collider2D col;
 
     void Start()
     {
         spawning = true;
         interval = .5f;
+        col = GetComponentInChildren<Collider2D>();
+        grapple = FindFirstObjectByType<Grapple>();
+        grapple.OnGrapple += checkGrappleAttached;
     }
 
     void Update(){
@@ -37,36 +41,31 @@ public class PrefabSpawner : MonoBehaviour
     // change to an event system rather than collider system
 
     void manualSpawn(){
-        if(grappleAttached && grapple != null){
+        if(grappleAttached){
             if(grapple.getState() == grapplerState.PullingObject){
                 Instantiate(prefabToSpawn, grapple.transform.position, grapple.transform.rotation);
-                grapple = null;
+                grappleAttached = false;
+                return;
+            }
+            if(!grapple.isDeployed()){
                 grappleAttached = false;
             }
-            if(grapple != null){
-                if(!grapple.isDeployed()){
-                    grapple = null;
-                    grappleAttached = false;
-                }
-            }
+       }
+    }
+
+    void checkGrappleAttached(Collider2D col){
+        if(this.col == col){
+            grappleAttached = true;
         }
     }
 
     void autoSpawn(){
-        Debug.Log("auto");
         if(Time.time - lastSpawnTime >= interval){
             float randX = Random.Range(-randomizeXPos,randomizeXPos);
             Vector2 randPos = new Vector2(parent.position.x + randX, parent.position.y);
             Instantiate(prefabToSpawn,randPos,parent.rotation);
             lastSpawnTime = Time.time;
         }
-    }
-
-    void OnTriggerEnter2D(Collider2D collision){
-        if(collision.CompareTag("Grappler")){
-            grapple = collision.GetComponentInParent<Grapple>();
-            grappleAttached = true;
-        }    
     }
 
     public void toggleAuto(bool toggle){
@@ -81,7 +80,5 @@ public class PrefabSpawner : MonoBehaviour
     public void setSpawning(bool spawn){
         spawning = spawn;
     }
-
-
 
 }

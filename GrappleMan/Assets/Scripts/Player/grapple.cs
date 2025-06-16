@@ -173,7 +173,6 @@ public class Grapple : MonoBehaviour
         {
             rayCastCollide();
         }
-        Debug.Log(currMaxLength);
         if (distance > currMaxLength || ((currState != grapplerState.Idle) && !leftClick))
         {
             currState = grapplerState.Retracting;
