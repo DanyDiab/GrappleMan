@@ -21,9 +21,10 @@ public class Slide : MonoBehaviour
 
     [Header("Slope Sliding Settings")]
     public float maxSlopeForce = 15f;        // Maximum force applied on steep slopes
+    float ogMinSlope;
     public float minSlopeAngle = 10f;        // Minimum angle to start applying slope force
     public float maxSlopeAngle = 60f;        // Angle at which maximum force is applied
-    public float raycastDistance = .3f;     // Distance to cast ray for slope detection
+    public float raycastDistance = .3f;    // Distance to cast ray for slope detection
     
     private Vector2 slopeDirection;          // Direction to apply slope force
     private float currentSlopeAngle;         // Current slope angle
@@ -38,19 +39,19 @@ public class Slide : MonoBehaviour
         ogDrag = rb.drag;
         slopeC = 5f;
         inputs = GetComponent<Inputs>();
+        ogMinSlope = minSlopeAngle;
     }
     void Update()
     {
         sPressed = inputs.getKeyDown(KeyCode.S);
         slide();
-        // if (startedSlide)
-        // {
-        //     preventUpwardsVelocity();
-        // }
+        adjustMinSlope();
+
     }
 
     void slide()
     {
+        addSlopeAccelAverage();
         if (sPressed && player.getOnFloor())
         {
             if (!startedSlide)
@@ -60,11 +61,23 @@ public class Slide : MonoBehaviour
                 startedSlide = true;
             }
             player.setSliding(true);
-            addSlopeAccelAverage();
             return;
         }
         player.setSliding(false);
         startedSlide = false;
+    }
+
+    void adjustMinSlope(){
+        if(player.isOnSlime()){
+            if(ogMinSlope == 0f){
+                ogMinSlope = minSlopeAngle;
+            }
+            minSlopeAngle = 0f;
+        }
+        else if(minSlopeAngle != ogMinSlope){
+                minSlopeAngle = ogMinSlope;
+                ogMinSlope = 0f;
+        }
     }
 
     void preventUpwardsVelocity()
@@ -117,7 +130,6 @@ public class Slide : MonoBehaviour
                 return;
             }
         }
-
     }
         
 }

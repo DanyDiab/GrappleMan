@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     bool isMoving;
     bool gotBounce;
     bool spiked;
+    bool onSlime;
     OpacityFlash opacityFlash;
 
     [Header("Floor Detection")]
@@ -55,8 +56,8 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        Debug.Log(onSlime);
         adjustDrag();
-
         determineIfIsMoving();
         switchPlayerSprite();
         drawHand();
@@ -142,7 +143,7 @@ public class Player : MonoBehaviour
     }
 
     void adjustDrag(){
-        if(sliding){
+        if(sliding || onSlime){
             rb.drag = slidingDrag;
             return;
         }
@@ -210,7 +211,6 @@ public RaycastHit2D[] GetValidFloorHits()
             validHits.Add(hit);
         }
     }
-    
     return validHits.ToArray();
 }
 
@@ -246,6 +246,14 @@ public RaycastHit2D[] GetValidFloorHits()
     }
     public void setgotBounce(bool gotBounce){
         this.gotBounce = gotBounce;
+    }
+
+
+    public void setOnSlime(bool onSlime){
+        this.onSlime = onSlime;
+    }
+    public bool isOnSlime(){
+        return onSlime;
     }
 
 

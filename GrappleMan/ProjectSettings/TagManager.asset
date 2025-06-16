@@ -25,6 +25,7 @@ TagManager:
   - BubbleKillBox
   - Valve
   - Mushroom
+  - Slime
   layers:
   - Default
   - TransparentFX
