@@ -28,7 +28,7 @@ public class Valve : MonoBehaviour
         grapple.OnGrapple += checkGrappleAttached;
         startRotation = 0f;
         targetRotation = 270f;
-        rotationSpeed = 1f;
+        rotationSpeed = 200f;
         currState = ValveState.Idle;
         particleSystems = GetComponentsInChildren<ParticleSystem>();
         foreach (ParticleSystem item in particleSystems)
@@ -78,8 +78,9 @@ public class Valve : MonoBehaviour
         float adjustment = 0f;
         if(transform.eulerAngles.z < targetRotation) adjustment = rotationSpeed;
         else if(transform.eulerAngles.z > targetRotation) adjustment = -rotationSpeed;
+        adjustment *= Time.deltaTime;
         transform.rotation = Quaternion.Euler(0,0,transform.eulerAngles.z + adjustment);
-        return Mathf.Abs(transform.eulerAngles.z - targetRotation) <= rotationSpeed;
+        return Mathf.Abs(transform.eulerAngles.z - targetRotation) <= rotationSpeed * Time.deltaTime;
     }
 
     void checkGrappleAttached(Collider2D col){

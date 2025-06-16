@@ -349572,7 +349572,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4551422793501137684, guid: e6a616a64089f934da48193bf09b089e, type: 3}
       propertyPath: m_SortingOrder
-      value: -1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5361074613817132723, guid: e6a616a64089f934da48193bf09b089e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -402401,7 +402401,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4551422793501137684, guid: e6a616a64089f934da48193bf09b089e, type: 3}
       propertyPath: m_SortingOrder
-      value: -1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5361074613817132723, guid: e6a616a64089f934da48193bf09b089e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -412512,7 +412512,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4551422793501137684, guid: e6a616a64089f934da48193bf09b089e, type: 3}
       propertyPath: m_SortingOrder
-      value: -1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5361074613817132723, guid: e6a616a64089f934da48193bf09b089e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -418202,7 +418202,7 @@ Transform:
   m_GameObject: {fileID: 1260823117}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 173.6, y: 36.7, z: 0}
+  m_LocalPosition: {x: -0.5, y: 47.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -428627,7 +428627,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4551422793501137684, guid: e6a616a64089f934da48193bf09b089e, type: 3}
       propertyPath: m_SortingOrder
-      value: -1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5361074613817132723, guid: e6a616a64089f934da48193bf09b089e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -450902,6 +450902,14 @@ PrefabInstance:
     - target: {fileID: 7125538385706736240, guid: 6143caf097179f645a94d13e38092ef6, type: 3}
       propertyPath: m_Name
       value: CastlePlatform
+      objectReference: {fileID: 0}
+    - target: {fileID: 7405590620088860552, guid: 6143caf097179f645a94d13e38092ef6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7405590620088860552, guid: 6143caf097179f645a94d13e38092ef6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 7859140981924717557, guid: 6143caf097179f645a94d13e38092ef6, type: 3}
       propertyPath: m_LocalPosition.x
