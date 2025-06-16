@@ -58,16 +58,14 @@ public class Door : MonoBehaviour
       currState = doorState.Closing;
     }
   }
-
   public void open(){
     rb.velocity = Vector2.up * doorSpeed;
   }
   public void close(){
-    bodyCollider.enabled = true;
     rb.velocity = Vector2.down * doorSpeed;
   }
 
-    void OnTriggerEnter2D(Collider2D collider2D)
+    void OnTriggerStay2D(Collider2D collider2D)
     {
         if(collider2D.gameObject.layer == LayerMask.NameToLayer("Floor") && currState == doorState.Closing){
           currState = doorState.Idle;

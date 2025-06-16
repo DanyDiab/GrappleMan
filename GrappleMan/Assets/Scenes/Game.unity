@@ -2249,7 +2249,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0024490356, y: -1.9028529}
+  m_Offset: {x: 0.0024490356, y: -1.9152884}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2260,7 +2260,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.8663864, y: 0.16152978}
+  m_Size: {x: 1.8663864, y: 0.18024123}
   m_EdgeRadius: 0
 --- !u!1 &43169960
 GameObject:
@@ -415580,7 +415580,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1171706959}
-  - component: {fileID: 1171706961}
   - component: {fileID: 1171706960}
   m_Layer: 12
   m_Name: Top
@@ -415633,7 +415632,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.020837784, y: 2.3172624}
@@ -415649,33 +415648,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.9640312, y: 0.60610723}
   m_EdgeRadius: 0
---- !u!50 &1171706961
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1171706958}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 3
 --- !u!4 &1178806381 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4550278229110861498, guid: 989f7c32c8d1df94a8c5953c9efcf26d, type: 3}
@@ -418281,7 +418253,7 @@ Transform:
   m_GameObject: {fileID: 1260823117}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30.21, y: 122.31, z: 0}
+  m_LocalPosition: {x: 36.8, y: 6.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
