@@ -18,6 +18,7 @@ public class PressurePlate : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collider2D){
         // ignore collision with the floor
+        if(collider2D.CompareTag("InBoundsBox")) return;
         if (collider2D.gameObject.layer == LayerMask.NameToLayer("Floor") || collider2D.gameObject.CompareTag("PPBody") || collider2D.gameObject.CompareTag("Grappler")) return;
         spriteRenderer.sprite = pressed;
         door.startOpen();

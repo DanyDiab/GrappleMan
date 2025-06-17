@@ -26,6 +26,7 @@ TagManager:
   - Valve
   - Mushroom
   - Slime
+  - InBoundsBox
   layers:
   - Default
   - TransparentFX
