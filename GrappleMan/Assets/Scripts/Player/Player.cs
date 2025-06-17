@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     [SerializeField] float otherDrag;
     [SerializeField] float slidingDrag;
 
+    Vector2 lastSafePos;
+
 
     Rigidbody2D rb;
     public Sprite left;
@@ -29,6 +31,7 @@ public class Player : MonoBehaviour
     bool gotBounce;
     bool spiked;
     bool onSlime;
+    bool inBounds;
     OpacityFlash opacityFlash;
 
     [Header("Floor Detection")]
@@ -56,13 +59,13 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log(onSlime);
         adjustDrag();
         determineIfIsMoving();
         switchPlayerSprite();
         drawHand();
         enableSlidingParticles();
         checkIfOnFloor();
+        inBoundsCheck();
         spriteRenderer.sprite = currSprite;
     }
 
@@ -156,6 +159,13 @@ public class Player : MonoBehaviour
         }
     }
 
+    void inBoundsCheck(){
+        if(!inBounds){
+            rb.position = lastSafePos;
+            inBounds = true;
+        }
+    }
+
     void checkIfOnFloor(){
         onFloor = false;
         Bounds bounds = GetComponentInChildren<Collider2D>().bounds;
@@ -170,6 +180,7 @@ public class Player : MonoBehaviour
 
             RaycastHit2D hit = Physics2D.Raycast(rayStart, Vector2.down,raycastDistance, floorLayerMask);
             if (hit.collider != null){
+                lastSafePos = rb.position;
                 onFloor = true;
                 if(!hit.collider.CompareTag("Mushroom")) gotBounce = false; 
                 break;
@@ -256,7 +267,7 @@ public RaycastHit2D[] GetValidFloorHits()
         return onSlime;
     }
 
-
-
-
+    public void setInBounds(bool inBounds){
+        this.inBounds = inBounds;
+    }
 }
