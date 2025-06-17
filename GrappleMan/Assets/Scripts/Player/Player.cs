@@ -31,12 +31,13 @@ public class Player : MonoBehaviour
     bool gotBounce;
     bool spiked;
     bool onSlime;
+    int slimeCountactCounter;
     bool inBounds;
     OpacityFlash opacityFlash;
 
     [Header("Floor Detection")]
     [SerializeField] LayerMask floorLayerMask;
-    [SerializeField] float raycastDistance = .6f;
+    [SerializeField] float raycastDistance = 1f;
 
     [SerializeField] float raycastOffset = .1f;
 
@@ -52,6 +53,7 @@ public class Player : MonoBehaviour
         grappler = FindFirstObjectByType<Grapple>();
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
+        inBounds = true;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         grapple = GetComponentInChildren<Grapple>();
         opacityFlash = GetComponentInChildren<OpacityFlash>();
@@ -146,11 +148,12 @@ public class Player : MonoBehaviour
     }
 
     void adjustDrag(){
+        Debug.Log(onSlime);
         if(sliding || onSlime){
             rb.drag = slidingDrag;
             return;
         }
-        else if(onFloor && !grapple.isDeployed() && !gotBounce){
+        else if(onFloor && !grapple.isActive() && !gotBounce){
             rb.drag = onFloorDrag;
         }
 
@@ -199,7 +202,7 @@ public class Player : MonoBehaviour
         Vector2 rayStart = rayOrigin;
         if(numRays > 1)
         {
-            float offsetRange = bounds.size.x * .4f;
+            float offsetRange = bounds.size.x;
             float step = (offsetRange * 2) / (numRays - 1);
             rayStart.x += -offsetRange + (i * step);
         }
@@ -224,6 +227,21 @@ public RaycastHit2D[] GetValidFloorHits()
     }
     return validHits.ToArray();
 }
+
+    public void addSlimeContact() {
+        slimeCountactCounter++;
+        if(slimeCountactCounter == 1) { // First slime contact
+            setOnSlime(true);
+        }
+    }
+    
+    public void removeSlimeContact() {
+        slimeCountactCounter--;
+        if(slimeCountactCounter <= 0) { // No more slime contacts
+            slimeCountactCounter = 0; // Prevent negative
+            setOnSlime(false);
+        }
+    }
 
 
     public bool InAir()

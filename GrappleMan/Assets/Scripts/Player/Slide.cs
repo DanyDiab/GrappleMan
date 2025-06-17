@@ -22,7 +22,7 @@ public class Slide : MonoBehaviour
     [Header("Slope Sliding Settings")]
     public float maxSlopeForce = 15f;        // Maximum force applied on steep slopes
     float ogMinSlope;
-    public float minSlopeAngle = 10f;        // Minimum angle to start applying slope force
+    public float minSlopeAngle = 30f;        // Minimum angle to start applying slope force
     public float maxSlopeAngle = 60f;        // Angle at which maximum force is applied
     public float raycastDistance = .3f;    // Distance to cast ray for slope detection
     
@@ -74,9 +74,9 @@ public class Slide : MonoBehaviour
             }
             minSlopeAngle = 0f;
         }
-        else if(minSlopeAngle != ogMinSlope){
-                minSlopeAngle = ogMinSlope;
-                ogMinSlope = 0f;
+        else if(minSlopeAngle == 0){
+            minSlopeAngle = ogMinSlope;
+            ogMinSlope = 0f;
         }
     }
 
@@ -125,6 +125,7 @@ public class Slide : MonoBehaviour
                 slopeDirection = averageSlopeDirection.normalized;
                 
                 float slopeForceMultiplier = Mathf.InverseLerp(minSlopeAngle, maxSlopeAngle, currentSlopeAngle);
+                if(player.isOnSlime()) slopeForceMultiplier += 10;
                 float appliedForce = maxSlopeForce * slopeForceMultiplier;
                 rb.AddForce(slopeDirection * appliedForce, ForceMode2D.Force);
                 return;

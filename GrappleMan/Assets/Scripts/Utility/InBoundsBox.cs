@@ -21,6 +21,7 @@ public class InBoundsBox : MonoBehaviour
     {
         if(collision.CompareTag("Player")){
             Player player = collision.GetComponentInParent<Player>();
+            if(player == null) return;
             player.setInBounds(false);
         }
     }

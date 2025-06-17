@@ -4,31 +4,46 @@ using UnityEngine;
 
 public class Slime : MonoBehaviour
 {
+    float checkTimer = 0f;
+    float checkInterval = 0.1f;
+    Player player;
+    static bool foundPlayer;
+    bool wasOnSlime;
     // Start is called before the first frame update
     void Start()
     {
-        
+        player = FindFirstObjectByType<Player>();
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void OnTriggerStay2D(Collider2D other){
-        if(other.CompareTag("Player")){
-            Player player = other.GetComponentInParent<Player>();
-            player.setOnSlime(true);
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if(other.CompareTag("Player")){
-            Player player = other.GetComponentInParent<Player>();
-            player.setOnSlime(false);
-
+ void Update() {
+        checkTimer += Time.deltaTime;
+        if(checkTimer >= checkInterval) {
+            checkTimer = 0f;
+            
+            Collider2D myCollider = GetComponentInChildren<Collider2D>();
+            ContactFilter2D filter = new ContactFilter2D();
+            List<Collider2D> results = new List<Collider2D>();
+            
+            int count = myCollider.OverlapCollider(filter, results);
+            
+            bool currentlyOnSlime = false;
+            foreach(var col in results) {
+                if(col.CompareTag("Player")) {
+                    currentlyOnSlime = true;
+                    break;
+                }
+            }
+            
+            // Only update player state when this slime's state changes
+            if(currentlyOnSlime && !wasOnSlime) {
+                player.addSlimeContact(); // New method: increment counter
+            }
+            else if(!currentlyOnSlime && wasOnSlime) {
+                player.removeSlimeContact(); // New method: decrement counter
+            }
+            
+            wasOnSlime = currentlyOnSlime;
         }
     }
 }
