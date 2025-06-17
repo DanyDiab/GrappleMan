@@ -411,7 +411,7 @@ public class Grapple : MonoBehaviour
 /// </summary>
     public bool isActive()
     {
-        return currState == grapplerState.PullingObject || currState == grapplerState.PullingPlayer;
+        return currState == grapplerState.PullingObject || currState == grapplerState.PullingPlayer || currState == grapplerState.Exploding;
     }
 
 

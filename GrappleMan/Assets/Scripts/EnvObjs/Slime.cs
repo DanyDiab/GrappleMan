@@ -37,10 +37,10 @@ public class Slime : MonoBehaviour
             
             // Only update player state when this slime's state changes
             if(currentlyOnSlime && !wasOnSlime) {
-                player.addSlimeContact(); // New method: increment counter
+                player.addSlimeContact(); 
             }
             else if(!currentlyOnSlime && wasOnSlime) {
-                player.removeSlimeContact(); // New method: decrement counter
+                player.removeSlimeContact();
             }
             
             wasOnSlime = currentlyOnSlime;

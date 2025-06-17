@@ -148,7 +148,6 @@ public class Player : MonoBehaviour
     }
 
     void adjustDrag(){
-        Debug.Log(onSlime);
         if(sliding || onSlime){
             rb.drag = slidingDrag;
             return;
@@ -230,15 +229,15 @@ public RaycastHit2D[] GetValidFloorHits()
 
     public void addSlimeContact() {
         slimeCountactCounter++;
-        if(slimeCountactCounter == 1) { // First slime contact
+        if(slimeCountactCounter == 1) {
             setOnSlime(true);
         }
     }
     
     public void removeSlimeContact() {
         slimeCountactCounter--;
-        if(slimeCountactCounter <= 0) { // No more slime contacts
-            slimeCountactCounter = 0; // Prevent negative
+        if(slimeCountactCounter <= 0) {
+            slimeCountactCounter = 0;
             setOnSlime(false);
         }
     }
