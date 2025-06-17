@@ -49,7 +49,7 @@ public class move : MonoBehaviour
 
 // add a linear decary to airX
     void preserveAir(){
-        if(player.InAir() && rb.velocity.x != 0){
+        if(player.touchingFloor() && rb.velocity.x != 0){
             if(airX == 0){
                 airX = rb.velocity.x;
             }
@@ -64,7 +64,7 @@ public class move : MonoBehaviour
     }
 
     void addAccelerationToGravity(){
-        if(player.InAir()){
+        if(player.touchingFloor()){
             if(!initG){
                 ogGScale = rb.gravityScale;
                 initG = true;

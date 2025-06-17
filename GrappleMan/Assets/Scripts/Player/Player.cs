@@ -245,7 +245,11 @@ public RaycastHit2D[] GetValidFloorHits()
 
     public bool InAir()
     {
-        return !onFloor && !grappler.isActive() || sliding;
+        return !onFloor && !grappler.isActive() || sliding || onSlime;
+    }
+
+    public bool touchingFloor(){
+        return !onFloor && !grappler.isActive();
     }
 
 
