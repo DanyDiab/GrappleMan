@@ -23,6 +23,7 @@ public class PauseMenu : MonoBehaviour
     public Button quit;
     PauseState currState;
     bool menuInteract;
+    Crosshair crosshair;
 
     
     // Start is called before the first frame update
@@ -33,6 +34,7 @@ public class PauseMenu : MonoBehaviour
         settings.onClick.AddListener(settingsClicked);
         quit.onClick.AddListener(quitClicked);
         mainMenu.onClick.AddListener(mainMenuClicked);
+        crosshair = FindFirstObjectByType<Crosshair>();
 
     }
 
@@ -46,6 +48,9 @@ public class PauseMenu : MonoBehaviour
                 if(menuInteract) currState = PauseState.Paused;
                 Time.timeScale = 1f;
                 toggleMenu(false);
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Confined;
+                crosshair.gameObject.SetActive(true);
                 break;
             case PauseState.Paused:
                 Time.timeScale = 0f;
@@ -54,6 +59,9 @@ public class PauseMenu : MonoBehaviour
                     currState = PauseState.Playing;
                     return;
                 }
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+                crosshair.gameObject.SetActive(false);
                 Inputs.toggleInput(false);
                 toggleMenu(true);
                 break;
