@@ -124,12 +124,12 @@ public class Slide : MonoBehaviour
                 currentSlopeAngle = averageAngle / validSlopeCount;
                 slopeDirection = averageSlopeDirection.normalized;
                 float slopeForceMultiplier = Mathf.InverseLerp(minSlopeAngle, maxSlopeAngle, currentSlopeAngle);
-                //     if(slopeDirection.x > 0 )slopeForceMultiplier += 10;
-                //     else slopeForceMultiplier -= 10;
-                float appliedForce = maxSlopeForce * slopeForceMultiplier;
+
                 if(player.isOnSlime()){
-                    appliedForce *= 1.2f;
+                    if(slopeDirection.x > 0 )slopeForceMultiplier += 20;
+                    else slopeForceMultiplier -= 20;
                 }
+                float appliedForce = maxSlopeForce * slopeForceMultiplier;
                 rb.AddForce(slopeDirection * appliedForce, ForceMode2D.Force);
                 return;
             }
