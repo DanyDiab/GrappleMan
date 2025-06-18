@@ -37,6 +37,14 @@ public class Inputs : MonoBehaviour
         return Input.GetMouseButtonDown(mouseToCheck) && checkInputs;
     }
 
+    public bool getKeyUp(KeyCode keyToCheck){
+        return Input.GetKeyUp(keyToCheck) && checkInputs;
+    }
+
+    public bool getMouseUp(int mouseToCheck){
+        return Input.GetMouseButtonUp(mouseToCheck) && checkInputs;
+    }
+
 
     public static void toggleInput(bool enabled){
         checkInputs = enabled;
