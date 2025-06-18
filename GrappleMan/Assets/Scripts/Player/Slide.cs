@@ -123,7 +123,6 @@ public class Slide : MonoBehaviour
                 averageSlopeDirection /= validSlopeCount;
                 currentSlopeAngle = averageAngle / validSlopeCount;
                 slopeDirection = averageSlopeDirection.normalized;
-                Debug.Log(slopeDirection);
                 float slopeForceMultiplier = Mathf.InverseLerp(minSlopeAngle, maxSlopeAngle, currentSlopeAngle);
                 //     if(slopeDirection.x > 0 )slopeForceMultiplier += 10;
                 //     else slopeForceMultiplier -= 10;
