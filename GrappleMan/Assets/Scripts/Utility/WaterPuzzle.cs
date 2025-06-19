@@ -41,6 +41,7 @@ public class WaterPuzzle : MonoBehaviour
                 if(!startedCutScene){
                     startedCutScene = true;
                     cutScene.startCutScene(head.position, 2f);
+                    
                 }
                 bubbleSpawner.setSpawning(true);
                 bubbleSpawner.toggleAuto(true);

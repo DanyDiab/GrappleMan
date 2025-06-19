@@ -109,9 +109,7 @@ public class Slide : MonoBehaviour
                 if (slopeAngle >= minSlopeAngle)
                 {
                     Vector2 hitSlopeDirection = Vector2.Perpendicular(surfaceNormal);
-                    if (hitSlopeDirection.y > 0)
-                        hitSlopeDirection = -hitSlopeDirection;
-                    
+                    if (hitSlopeDirection.y > 0) hitSlopeDirection = -hitSlopeDirection;
                     averageSlopeDirection += hitSlopeDirection;
                     averageAngle += slopeAngle;
                     validSlopeCount++;

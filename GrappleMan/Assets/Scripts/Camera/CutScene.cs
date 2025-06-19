@@ -15,6 +15,7 @@ public class CutScene : MonoBehaviour
     float currTime;
     float totalTime;
     Transform og;
+    public Transform curr;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,10 +33,11 @@ public class CutScene : MonoBehaviour
                 }
                 break;
             case CutSceneState.InProgress:
-                transform.position = targetPos;
-                camFollow.setTarget(transform);
+                curr.position = targetPos;
+                camFollow.setTarget(curr);
                 currTime += Time.deltaTime;
                 if(currTime > totalTime){
+                    currTime = 0f;
                     currState = CutSceneState.Return;
                 }
                 break;
@@ -43,7 +45,6 @@ public class CutScene : MonoBehaviour
                 camFollow.setTarget(og);
                 start = false;
                 break;
-            
         }
     }
 

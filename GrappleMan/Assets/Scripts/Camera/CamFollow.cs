@@ -16,6 +16,7 @@ public class CamFollow : MonoBehaviour
     float maxZoom;
     float minSpeed;
     float maxSpeed;
+    bool following;
 
     // Start is called before the first frame update
     void Start()
@@ -29,9 +30,11 @@ public class CamFollow : MonoBehaviour
         maxSpeed = 100f;
         Vector3 pos = new Vector3(target.position.x,target.position.y, -1);
         transform.position = pos;
+        following = true;
     }
     // Update is called once per frame
     void LateUpdate(){
+        if(!following) return;
         Vector3 pos = new Vector3(target.position.x,target.position.y, -1);
         if(transform.position != pos){
             transform.position = Vector3.Lerp(transform.position, pos, Time.deltaTime * camDamping);
@@ -43,6 +46,9 @@ public class CamFollow : MonoBehaviour
     }
     public void setTarget(Transform transform){
         target = transform;
+    }
+    public void setFollowing(bool following){
+        this.following = following;
     }
     
 }
