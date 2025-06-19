@@ -10,13 +10,16 @@ public enum WaterPuzzleState{
 public class WaterPuzzle : MonoBehaviour
 {
     public Transform head;
+    CutScene cutScene;
     Valve[] valves;
     WaterPuzzleState currState;
     PrefabSpawner bubbleSpawner;
+    bool startedCutScene;
     // Start is called before the first frame update
     void Start()
     {
-        currState = WaterPuzzleState.Idle;
+        cutScene = Camera.main.GetComponent<CutScene>();
+        currState = WaterPuzzleState.Complete;
         valves = GetComponentsInChildren<Valve>();
         bubbleSpawner = GetComponentInChildren<PrefabSpawner>();
 
@@ -33,10 +36,12 @@ public class WaterPuzzle : MonoBehaviour
                     currState = WaterPuzzleState.Complete;
                 }
                 bubbleSpawner.setSpawning(false);
-
                 break;
             case WaterPuzzleState.Complete:
-                Debug.Log("Complete");
+                if(!startedCutScene){
+                    startedCutScene = true;
+                    cutScene.startCutScene(head.position, 2f);
+                }
                 bubbleSpawner.setSpawning(true);
                 bubbleSpawner.toggleAuto(true);
                 bubbleSpawner.setAutoSpawnVars(1f,head,1);
