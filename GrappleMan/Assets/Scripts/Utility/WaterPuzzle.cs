@@ -19,7 +19,7 @@ public class WaterPuzzle : MonoBehaviour
     void Start()
     {
         cutScene = Camera.main.GetComponent<CutScene>();
-        currState = WaterPuzzleState.Complete;
+        currState = WaterPuzzleState.Idle;
         valves = GetComponentsInChildren<Valve>();
         bubbleSpawner = GetComponentInChildren<PrefabSpawner>();
 
