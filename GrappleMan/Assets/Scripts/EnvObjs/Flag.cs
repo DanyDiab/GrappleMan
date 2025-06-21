@@ -11,7 +11,8 @@ public enum FlagState
 {
     AwaitingPickup,
     InInventory,
-    Deployed
+    Deployed,
+    Used
 
 }
 public class Flag : MonoBehaviour
@@ -55,7 +56,7 @@ public class Flag : MonoBehaviour
         {
             case FlagState.AwaitingPickup:
                 floatingSprite();
-                return;
+                break;
             case FlagState.InInventory:
                 drawUI("Place Flag?");
                 rb.bodyType = RigidbodyType2D.Static;
@@ -67,7 +68,7 @@ public class Flag : MonoBehaviour
                     interacted = false;
                     deploy();
                 }
-                return;
+                break;
             case FlagState.Deployed:
                 drawUI("Teleport To Flag?");
                 if (player.getIsMoving()) return;
@@ -77,9 +78,14 @@ public class Flag : MonoBehaviour
                 {
                     interacted = false;
                     teleportPlayer();
+                    currState = FlagState.Used;
                 }
+                break;
+            case FlagState.Used:
+                drawUI("Flag is now used");
+                spriteRenderer.color = Color.black;
+                break;
 
-                return;
         }
     }
 
