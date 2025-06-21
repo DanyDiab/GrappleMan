@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4550278229110861498}
   - component: {fileID: 5258654385999328225}
+  - component: {fileID: -1232545362675592392}
   m_Layer: 12
   m_Name: Chandelier
   m_TagString: Light
@@ -63,6 +64,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &-1232545362675592392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722501346747184813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73cdb4e5042e68d42bb05eac3e77144b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minIntense: 0
+  maxIntense: 0
+  flickerSpeed: 0
 --- !u!1 &6776135525943156288
 GameObject:
   m_ObjectHideFlags: 0
