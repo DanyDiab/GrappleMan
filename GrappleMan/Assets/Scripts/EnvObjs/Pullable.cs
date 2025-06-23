@@ -7,6 +7,9 @@ public class Pullable : MonoBehaviour
     bool isPulled;
     public bool isStuck;
     Rigidbody2D rb;
+    Grapple grapple;
+    Rigidbody2D grappleRB;
+    Vector2 posRelativeToGrapple;
     // Start is called before the first frame update
 
 
@@ -14,7 +17,9 @@ public class Pullable : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 2;
-        
+        posRelativeToGrapple = Vector2.zero;
+        grapple = FindAnyObjectByType<Grapple>();
+        grappleRB = grapple.getRB();
     }
     void LateUpdate(){
         if (isStuck){
@@ -26,6 +31,15 @@ public class Pullable : MonoBehaviour
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
             return;
         }   
+    }
+
+    void Update(){
+        if(isPulled){
+            if(posRelativeToGrapple == Vector2.zero){
+                posRelativeToGrapple = grappleRB.position - rb.position;
+            }
+            rb.position = grappleRB.position + posRelativeToGrapple;
+        }
     }
 
     public void setIsPulled(bool pulled)

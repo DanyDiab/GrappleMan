@@ -293,11 +293,16 @@ public class Grapple : MonoBehaviour
         currMaxLength = length;
         transform.parent = parentRb.transform;
         transform.localPosition = Vector3.zero;
+        if (pullObject != null)
+        {
+            pullObject.setIsPulled(false);
+        }
         pullObject = null;
         distance = 0;
         rb.velocity = Vector2.zero;
         lastPos = transform.position;
         attachedRigidBody = null;
+
         // transform.position = parent.transform.position;
         foreach (Transform child in transform)
         {
@@ -336,9 +341,9 @@ public class Grapple : MonoBehaviour
             if (attachedRigidBody != null && attachedRigidBody.bodyType != RigidbodyType2D.Static)
             {
 
-                rb.constraints = RigidbodyConstraints2D.None;
-                rb.position = attachedRigidBody.position;
-                return;
+                // rb.constraints = RigidbodyConstraints2D.None;
+                // rb.position = attachedRigidBody.position;
+                // return;
             }
             rb.bodyType = RigidbodyType2D.Static;
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -351,7 +356,8 @@ public class Grapple : MonoBehaviour
     {
         keepHeadInPlace(false);
         moveGrappler(false, returnSpeed);
-        if (distance <= 0.5f)
+        Debug.Log("return speed " + returnSpeed);
+        if (distance <= returnSpeed * Time.deltaTime)
         {
             currState = grapplerState.Idle;
         }
@@ -402,6 +408,10 @@ public class Grapple : MonoBehaviour
     public grapplerState getState()
     {
         return currState;
+    }
+
+    public Rigidbody2D getRB(){
+        return rb;
     }
 
 
