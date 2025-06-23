@@ -10,6 +10,12 @@ public class Pullable : MonoBehaviour
     Grapple grapple;
     Rigidbody2D grappleRB;
     Vector2 posRelativeToGrapple;
+    SpringJoint2D springJoint;
+
+
+    [SerializeField] float springForce = 1000f;
+    [SerializeField] float dampingRatio = 0.7f;
+    [SerializeField] float maxDistance = 5f;
     // Start is called before the first frame update
 
 
@@ -36,9 +42,33 @@ public class Pullable : MonoBehaviour
     void Update(){
         if(isPulled){
             if(posRelativeToGrapple == Vector2.zero){
-                posRelativeToGrapple = grappleRB.position - rb.position;
+                startPull();
             }
-            rb.position = grappleRB.position + posRelativeToGrapple;
+            Vector2 newPos = grappleRB.position + posRelativeToGrapple;
+            rb.MovePosition(newPos);
+            return;
+        }
+        stopPull();
+    }
+
+
+    public void startPull(){
+        posRelativeToGrapple = grappleRB.position - rb.position;
+        springJoint = gameObject.AddComponent<SpringJoint2D>();
+        springJoint.connectedBody = grappleRB;
+        springJoint.autoConfigureDistance = false;
+        springJoint.distance = Vector2.Distance(transform.position, grappleRB.position);
+        springJoint.frequency = springForce;
+        springJoint.dampingRatio = dampingRatio;
+        springJoint.breakForce = Mathf.Infinity;
+    }
+
+    public void stopPull(){
+        posRelativeToGrapple = Vector2.zero;
+        if (springJoint != null)
+        {
+            Destroy(springJoint);
+            springJoint = null;
         }
     }
 
@@ -49,15 +79,5 @@ public class Pullable : MonoBehaviour
 
     public Rigidbody2D getRb(){
         return rb;
-    }
-
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        // if the box collides with the player transfer momentum? could be a fun idea
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Floor")){
-            if(!isPulled){
-                rb.velocity = Vector2.zero;
-            }
-        }
     }
 }

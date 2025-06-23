@@ -358488,7 +358488,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 5
-  m_AngularDrag: 0.05
+  m_AngularDrag: 100
   m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -358532,6 +358532,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStuck: 0
+  springForce: 1000
+  dampingRatio: 0.7
+  maxDistance: 5
 --- !u!4 &323170417 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8286241827305889754, guid: ab0c59bfa97cda547a48f63b79c08d98, type: 3}
@@ -414247,6 +414250,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStuck: 1
+  springForce: 1000
+  dampingRatio: 0.7
+  maxDistance: 5
 --- !u!114 &1105378720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416423,6 +416429,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStuck: 0
+  springForce: 1000
+  dampingRatio: 0.7
+  maxDistance: 5
 --- !u!114 &1169048834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424235,6 +424244,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStuck: 0
+  springForce: 1000
+  dampingRatio: 0.7
+  maxDistance: 5
 --- !u!114 &1430119992
 MonoBehaviour:
   m_ObjectHideFlags: 0
