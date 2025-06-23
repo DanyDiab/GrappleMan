@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     public Sprite right;
     public Sprite normal;
     public GrappleHandPosition grappleHandPosition;
+    Inputs inputs;
     SpriteRenderer spriteRenderer;
     public SpriteRenderer hand;
     Sprite currSprite;
@@ -34,6 +35,7 @@ public class Player : MonoBehaviour
     int slimeCountactCounter;
     bool inBounds;
     OpacityFlash opacityFlash;
+    ObjectShake shake;
 
     [Header("Floor Detection")]
     [SerializeField] LayerMask floorLayerMask;
@@ -57,6 +59,8 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         grapple = GetComponentInChildren<Grapple>();
         opacityFlash = GetComponentInChildren<OpacityFlash>();
+        inputs = GetComponent<Inputs>();
+        shake = GetComponent<ObjectShake>();
         movingTolerance = .1f;
     }
     void Update()
@@ -68,6 +72,7 @@ public class Player : MonoBehaviour
         enableSlidingParticles();
         checkIfOnFloor();
         inBoundsCheck();
+        shakePlayerOnBadInput();
         spriteRenderer.sprite = currSprite;
     }
 
@@ -165,6 +170,13 @@ public class Player : MonoBehaviour
         if(!inBounds){
             rb.position = lastSafePos;
             inBounds = true;
+        }
+    }
+
+    void shakePlayerOnBadInput(){
+        if(grapple.isDeployed() || shake.getShaking() || isMoving) return;
+        if(inputs.getKeyDown(KeyCode.A) || inputs.getKeyDown(KeyCode.D) || inputs.getKeyDown(KeyCode.W)){
+            shake.objectShake();
         }
     }
 

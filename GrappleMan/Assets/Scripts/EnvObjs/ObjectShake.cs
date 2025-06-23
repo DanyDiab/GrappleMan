@@ -10,6 +10,7 @@ public class ObjectShake : MonoBehaviour {
     Vector3 originalPos;
     float shakeDuration;
     float shakeMagnitude;
+    bool shaking;
 
 
 
@@ -21,6 +22,7 @@ public class ObjectShake : MonoBehaviour {
     }
     public void objectShake()
     {
+        shaking = true;
         originalPos = transform.position;
         StartCoroutine(Shake());
     }
@@ -40,6 +42,13 @@ public class ObjectShake : MonoBehaviour {
         }
 
         spriteRenderer.transform.position = originalPos;
+        shaking = false;
+        StopCoroutine(Shake());
+    }
+
+
+    public bool getShaking(){
+        return shaking;
     }
 
 }
